@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/denismark94/rslang.git"
+    "url": "git+https://github.com/Gangeya/onlinestore.git"
   },
   "author": "Eugene Mikhalionok",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/denismark94/rslang/issues"
+    "url": "https://github.com/Gangeya/onlinestore/issues"
   },
-  "homepage": "https://github.com/denismark94/rslang#readme",
+  "homepage": "https://github.com/Gangeya/onlinestore#readme",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.33.1",
     "@typescript-eslint/parser": "^5.30.3",

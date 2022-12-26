@@ -8,7 +8,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const config = {
   entry: path.resolve(__dirname, './src/index.ts'),
   output: {
-    filename: 'index.js',
+    filename: '[hash].js',
     path: path.resolve(__dirname, './dist'),
   },
   plugins: [
@@ -21,7 +21,7 @@ const config = {
       filename: 'index.html',
     }),
     new CleanWebpackPlugin(),
-    new MiniCssExtractPlugin({ filename: '[name].css' }),
+    new MiniCssExtractPlugin({ filename: '[hash].css' }),
   ],
   module: {
     rules: [
