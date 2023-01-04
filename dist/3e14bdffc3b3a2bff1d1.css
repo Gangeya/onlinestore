@@ -1,3 +1,0 @@
-body{background-color:#008b8b}header{border:1px solid #ccc;padding:10px}header nav{display:flex;gap:10px}header a{color:#fff;display:block;padding:5px;height:20px;text-decoration:none;border:1px solid #fff;transition:all .5s ease}header a:first-letter{text-transform:uppercase}header a:hover{background-color:#00008b}
-main{padding:10px}
-footer{border:1px solid #fff;padding:10px}

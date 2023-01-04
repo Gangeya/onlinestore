@@ -1,26 +1,65 @@
-body {
-  background-color: darkcyan;
+ul,div,body{
+  padding: 0;
+  margin: 0;
 }
-header {
-  border: 1px solid #ccc;
-  padding: 10px;
-  nav {
-    display: flex;
-    gap: 10px;
-  }
-  a {
-    color: #fff;
-    display: block;
-    padding: 5px;
-    height: 20px;
-    text-decoration: none;
-    border: 1px solid #fff;
-    transition: all 0.5s ease;
-    &:first-letter {
-      text-transform: uppercase;
-    }
-    &:hover {
-      background-color: darkblue;
-    }
-  }
+body{
+  font-family: 'Rosario', sans-serif;
+  font-size: 16px;
+  color: #050505;
+  background-color: #f2f2f2;
+}
+header{
+  width: 100%;
+}
+.content{
+  display: flex;
+}
+aside{
+  width: 20%;
+}
+main{
+  width: 80%;
+}
+.container{
+  max-width: 1920px;
+  margin: 0 auto;
+}
+.header{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 80px;
+  background-color: aqua;
+}
+.cart-block{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 150px;
+}
+.cart{
+  position: relative;
+}
+.cart-count{
+  position: absolute;
+  background: yellow;
+  top: 2px;
+  right: 2px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.breadcrumbs{
+  background-color: lightgrey;
+}
+.breadcrumbs-list{
+  height: 40px;
+  display: flex;
+  list-style: none;
+  justify-content: space-evenly;
+  width: 35%;
+  align-items: center;
 }
