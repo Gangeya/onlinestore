@@ -11,14 +11,15 @@ body{
 header{
   width: 100%;
 }
+.main{
+  display: flex; 
+ }
+
 .content{
-  display: flex;
+  width: 80%;
 }
 aside{
   width: 20%;
-}
-main{
-  width: 80%;
 }
 .container{
   max-width: 1920px;
@@ -62,4 +63,55 @@ main{
   justify-content: space-evenly;
   width: 35%;
   align-items: center;
+}
+.filter-inner{
+  padding: 10px;
+}
+.filter-buttons{
+  display: flex;
+  justify-content: space-around;
+}
+.filter-block{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 20px;
+  padding: 15px;
+  margin: 10px;
+}
+.item{
+  display: flex;
+  justify-content: space-between;
+}
+
+.main-top{
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.view{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.products-list{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  grid-gap: 10px 10px;
+}
+.product{
+  padding: 20px;
+  background-color: white;
+  border-radius: 20px;
+}
+.product-title{
+  display: flex;
+  justify-content: center;
+}
+.info{
+  display: flex;
+  justify-content: space-between;
 }
