@@ -1,4 +1,7 @@
 import BaseComponent from '../../core/templates/component';
+const view1 = require('../../assets/images/view1.png');
+const view2 = require('../../assets/images/view2.png');
+const thumbnail = require('../../assets/images/thumbnail.jpg');
 
 class MainPage extends BaseComponent {
   constructor(title: string, content: string) {
@@ -13,8 +16,8 @@ class MainPage extends BaseComponent {
     const filter=new BaseComponent('div').setClass('filter').render(aside);
     const filterinner=new BaseComponent('div').setClass('filter-inner').render(filter);
     const filterbuttons=new BaseComponent('div').setClass('filter-buttons').render(filterinner);
-    new BaseComponent('button').setContent('Reset').render(filterbuttons);
-    new BaseComponent('button').setContent('Copy').render(filterbuttons);
+    new BaseComponent('button').setClass('reset').setContent('Reset').render(filterbuttons);
+    new BaseComponent('button').setClass('copy').setContent('Copy').render(filterbuttons);
 
     const filterblock=new BaseComponent('div').setClass('filter-block').render(filterinner);
     new BaseComponent('div').setClass('filter-title').setContent('Category').render(filterblock);
@@ -57,7 +60,7 @@ class MainPage extends BaseComponent {
     const data=new BaseComponent('div').render(filterblock3);
     new BaseComponent('span').setContent('500$').render(data);
     const range=new BaseComponent('div').setClass('range').render(filterblock3);
-    new BaseComponent('input').setAttribute('type','range').setAttribute('min','1').setAttribute('max','100').render(range);
+    new BaseComponent('input').setAttribute('type','range').setClass('range-price').setAttribute('min','1').setAttribute('max','100').render(range);
 
     //block stock range
     const filterblock4=new BaseComponent('div').setClass('filter-block').render(filterinner);
@@ -65,7 +68,7 @@ class MainPage extends BaseComponent {
     const data2=new BaseComponent('div').render(filterblock4);
     new BaseComponent('span').setContent('10').render(data2);
     const range2=new BaseComponent('div').setClass('range').render(filterblock4);
-    new BaseComponent('input').setAttribute('type','range').setAttribute('min','1').setAttribute('max','500').render(range2);
+    new BaseComponent('input').setAttribute('type','range').setClass('range-stock').setAttribute('min','1').setAttribute('max','500').render(range2);
 
     //CONTENT
     const contents=new BaseComponent('div').setClass('content').render(main);
@@ -73,8 +76,8 @@ class MainPage extends BaseComponent {
     //MAIN TOP
     const maintop=new BaseComponent('div').setClass('main-top').render(maininner);
 
-    const sort=new BaseComponent('div').setClass('sort').render(maintop);
-    const select=new BaseComponent('select').render(sort);
+    const sort=new BaseComponent('div').setClass('sort-block').render(maintop);
+    const select=new BaseComponent('select').setClass('sort').render(sort);
     new BaseComponent('option').setAttribute('value','price-asc').setContent('Sort by price ASC').render(select);
     new BaseComponent('option').setAttribute('value','price-desc').setContent('Sort by price DESC').render(select);
     new BaseComponent('option').setAttribute('value','reting-asc').setContent('Sort by reting ASC').render(select);
@@ -82,22 +85,25 @@ class MainPage extends BaseComponent {
 
     new BaseComponent('div').setClass('found').setContent('100').render(maintop);
 
-    const search=new BaseComponent('div').setClass('search').render(maintop);
-    new BaseComponent('input').setAttribute('type','text').setAttribute('placeholder','Search').render(search);
+    const search=new BaseComponent('div').setClass('search-block').render(maintop);
+    new BaseComponent('input').setAttribute('type','text').setClass('search').setAttribute('placeholder','Search').render(search);
 
     const view=new BaseComponent('div').setClass('view').render(maintop);
-    new BaseComponent('img').setAttribute('src','assets/img/view1.png').setAttribute('width','32').render(view);
-    new BaseComponent('img').setAttribute('src','assets/img/view2.png').setAttribute('width','27').render(view);
+    new BaseComponent('img').setAttribute('src',view1).setAttribute('height','27').render(view);
+    new BaseComponent('img').setAttribute('src',view2).setAttribute('width','27').render(view);
 
     //PRODUCT LIST
     const productlist=new BaseComponent('div').setClass('products-list').render(maininner);
     //PRODUCT
-    for(let i:number=0;i<6;i+=1){
+    for(let i:number=0;i<12;i+=1){
     const product=new BaseComponent('div').setClass('product').render(productlist);
     const productimg=new BaseComponent('div').setClass('product-img').render(product);
-    new BaseComponent('img').setAttribute('src','assets/img/thumbnail').setAttribute('width','220').render(productimg);
+    new BaseComponent('img').setAttribute('src',thumbnail).setAttribute('width','220').render(productimg);
     new BaseComponent('div').setClass('product-title').setContent('Iphone 9').render(product);
     const info=new BaseComponent('div').setClass('product-info').render(product);
+    const productbottom=new BaseComponent('div').setClass('product-bottom').render(product);
+    new BaseComponent('input').setAttribute('type','button').setClass('tocart').setAttribute('value','В корзину').render(productbottom);
+    new BaseComponent('input').setAttribute('type','button').setClass('more').setAttribute('value','Подробно').render(productbottom);
     
     const infocat=new BaseComponent('div').setClass('info').setClass('category').render(info);
     new BaseComponent('span').setContent('Category').render(infocat);

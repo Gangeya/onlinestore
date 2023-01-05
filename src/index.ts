@@ -40,7 +40,7 @@ export default class App {
 
   start() {
     // this.header.makeHeader();
-    const nav = new BaseComponent('nav').setClass('nav');
+    const nav = new BaseComponent('nav').setClass('d-none');
     const footer = new Footer('footer', 'footer');
 
     Object.keys(routes).forEach((route) => {

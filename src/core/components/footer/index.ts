@@ -4,7 +4,7 @@ class Footer {
   constructor(tagName: string, className: string) {
     this.container = document.createElement(tagName);
     this.container.className = className;
-    this.container.innerHTML = '<h1>Footer</h1>';
+    this.container.innerHTML = '<p class="footer-text">Online Store 2023</p>';
   }
 
   render() {
