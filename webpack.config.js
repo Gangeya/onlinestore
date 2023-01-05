@@ -34,6 +34,10 @@ const config = {
         },
       },
       {
+        test: /\.html$/i,
+        loader: "html-loader",
+      },
+      {
         test: /\.(?:gif|png|jpg|jpeg)$/i,
         type: 'asset/resource',
         generator: {

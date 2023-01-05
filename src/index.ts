@@ -39,12 +39,14 @@ export default class App {
   }
 
   start() {
-    const nav = new BaseComponent('nav').setClass('nav');
+    // this.header.makeHeader();
+    const nav = new BaseComponent('nav').setClass('d-none');
     const footer = new Footer('footer', 'footer');
 
     Object.keys(routes).forEach((route) => {
       new Link(route).render(nav);
     });
+
     nav.render(this.header);
     this.header.render(this.container);
 
