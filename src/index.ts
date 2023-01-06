@@ -30,7 +30,6 @@ export default class App {
   handleRouteChange(): void {
     const hash = window.location.hash.slice(1).toLowerCase();
     const targetPage = hash ? routes[hash] || notFoundPage : routes.main;
-    console.log(targetPage, this.activePage);
 
     if (targetPage === this.activePage) return;
     if (this.activePage) this.activePage.remove();
@@ -56,6 +55,5 @@ export default class App {
   }
 }
 
-const app = new App();
+export const app = new App();
 app.start();
-console.log(app);
