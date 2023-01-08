@@ -168,7 +168,8 @@ class MainPage extends BaseComponent {
       .setClass('products-list')
       .render(maininner);
 
-    this.renderProducts(productlist);
+    this.renderContent(productlist);
+    //this.renderProducts(productlist);
     //this.renderFilter(filterlist);
   }
 
@@ -187,12 +188,18 @@ class MainPage extends BaseComponent {
     console.log('filter');
   }
 
-  async renderProducts(productlist: HTMLElement) {
+  async renderContent(container: HTMLElement) {
     DATA = await this.getData();
 
-    DATA.products.forEach((product: TProduct) => {
-      if (productlist) {
-        productlist.innerHTML += `<div class="product">
+    this.renderProducts(container, DATA.products);
+    this.renderFilter('categories');
+    this.renderFilter('brand');
+  }
+
+  renderProducts(container: HTMLElement, data: TProduct[]) {
+    data.forEach((product: TProduct) => {
+      if (container) {
+        container.innerHTML += `<div class="product">
         <div class="product-img">
           <img
             src="${product.thumbnail}"
@@ -220,10 +227,6 @@ class MainPage extends BaseComponent {
       </div>`;
       }
     });
-
-    //render filters
-    this.renderFilter('categories');
-    this.renderFilter('brand');
   }
 
   renderFilter(name: string) {
