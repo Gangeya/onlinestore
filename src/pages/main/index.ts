@@ -5,16 +5,23 @@ const thumbnail = require('../../assets/images/thumbnail.jpg');
 import { IProducts } from '../../core/types';
 import { TProduct } from '../../core/types';
 
+let DATA: IProducts;
+//let test: string;
+
 class MainPage extends BaseComponent {
   constructor(title: string, content: string) {
     super('main');
+
     const main = new BaseComponent('div')
       .setClass('main')
       .setClass('container')
       .render(this);
     //ASIDE
     const aside = new BaseComponent('aside').render(main);
-    const filter = new BaseComponent('div').setClass('filter').render(aside);
+    const filter = new BaseComponent('div')
+      .setClass('filter')
+      .setHandler('input', (e) => this.filterProduct())
+      .render(aside);
     const filterinner = new BaseComponent('div')
       .setClass('filter-inner')
       .render(filter);
@@ -42,29 +49,7 @@ class MainPage extends BaseComponent {
     const filterlist = new BaseComponent('div')
       .setClass('filter-list')
       .render(filterblock);
-    const item = new BaseComponent('div').setClass('item').render(filterlist);
-    new BaseComponent('input')
-      .setAttribute('type', 'checkbox')
-      .setAttribute('id', 'smartphone')
-      .setAttribute('name', 'smartphone')
-      .render(item);
-    new BaseComponent('label')
-      .setAttribute('for', 'smartphone')
-      .setContent('Smartphone')
-      .render(item);
-    new BaseComponent('span').setContent('1/1').render(item);
-
-    const item2 = new BaseComponent('div').setClass('item').render(filterlist);
-    new BaseComponent('input')
-      .setAttribute('type', 'checkbox')
-      .setAttribute('id', 'smartphone')
-      .setAttribute('name', 'smartphone')
-      .render(item2);
-    new BaseComponent('label')
-      .setAttribute('for', 'smartphone')
-      .setContent('Smartphone')
-      .render(item2);
-    new BaseComponent('span').setContent('1/1').render(item2);
+    filterlist.id = 'categories';
 
     const filterblock2 = new BaseComponent('div')
       .setClass('filter-block')
@@ -78,47 +63,10 @@ class MainPage extends BaseComponent {
     const filterlist2 = new BaseComponent('div')
       .setClass('filter-list')
       .render(filterblock2);
+    filterlist2.id = 'brand';
     const item11 = new BaseComponent('div')
       .setClass('item')
       .render(filterlist2);
-    new BaseComponent('input')
-      .setAttribute('type', 'checkbox')
-      .setAttribute('id', 'apple')
-      .setAttribute('name', 'apple')
-      .render(item11);
-    new BaseComponent('label')
-      .setAttribute('for', 'apple')
-      .setContent('Apple')
-      .render(item11);
-    new BaseComponent('span').setContent('1/1').render(item11);
-
-    const item22 = new BaseComponent('div')
-      .setClass('item')
-      .render(filterlist2);
-    new BaseComponent('input')
-      .setAttribute('type', 'checkbox')
-      .setAttribute('id', 'samsung')
-      .setAttribute('name', 'samsung')
-      .render(item22);
-    new BaseComponent('label')
-      .setAttribute('for', 'samsung')
-      .setContent('Samsung')
-      .render(item22);
-    new BaseComponent('span').setContent('1/1').render(item22);
-
-    const item33 = new BaseComponent('div')
-      .setClass('item')
-      .render(filterlist2);
-    new BaseComponent('input')
-      .setAttribute('type', 'checkbox')
-      .setAttribute('id', 'huawie')
-      .setAttribute('name', 'huawie')
-      .render(item33);
-    new BaseComponent('label')
-      .setAttribute('for', 'huawie')
-      .setContent('Huawie')
-      .render(item33);
-    new BaseComponent('span').setContent('1/1').render(item33);
 
     //block price range
     const filterblock3 = new BaseComponent('div')
@@ -219,95 +167,30 @@ class MainPage extends BaseComponent {
     const productlist = new BaseComponent('div')
       .setClass('products-list')
       .render(maininner);
-    //PRODUCT
-    // for (let i: number = 0; i < 12; i += 1) {
-    //   const product = new BaseComponent('div')
-    //     .setClass('product')
-    //     .render(productlist);
-    //   const productimg = new BaseComponent('div')
-    //     .setClass('product-img')
-    //     .render(product);
-    //   new BaseComponent('img')
-    //     .setAttribute('src', thumbnail)
-    //     .setAttribute('width', '220')
-    //     .render(productimg);
-    //   new BaseComponent('div')
-    //     .setClass('product-title')
-    //     .setContent('Iphone 9')
-    //     .render(product);
-    //   const info = new BaseComponent('div')
-    //     .setClass('product-info')
-    //     .render(product);
-    //   const productbottom = new BaseComponent('div')
-    //     .setClass('product-bottom')
-    //     .render(product);
-    //   new BaseComponent('input')
-    //     .setAttribute('type', 'button')
-    //     .setClass('tocart')
-    //     .setAttribute('value', 'В корзину')
-    //     .render(productbottom);
-    //   new BaseComponent('input')
-    //     .setAttribute('type', 'button')
-    //     .setClass('more')
-    //     .setAttribute('value', 'Подробно')
-    //     .render(productbottom);
 
-    //   const infocat = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('category')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Category').render(infocat);
-    //   new BaseComponent('span').setContent('Smartphone').render(infocat);
-
-    //   const infobrand = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('brand')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Brand').render(infobrand);
-    //   new BaseComponent('span').setContent('Apple').render(infobrand);
-
-    //   const infoprice = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('price')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Price').render(infoprice);
-    //   new BaseComponent('span').setContent('400$').render(infoprice);
-
-    //   const infodiscount = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('discount')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Discount').render(infodiscount);
-    //   new BaseComponent('span').setContent('10%').render(infodiscount);
-
-    //   const inforating = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('rating')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Rating').render(inforating);
-    //   new BaseComponent('span').setContent('4.8').render(inforating);
-
-    //   const infostock = new BaseComponent('div')
-    //     .setClass('info')
-    //     .setClass('stock')
-    //     .render(info);
-    //   new BaseComponent('span').setContent('Stock').render(infostock);
-    //   new BaseComponent('span').setContent('55').render(infostock);
-    // }
-    this.renderProducts();
+    this.renderProducts(productlist);
+    //this.renderFilter(filterlist);
   }
 
   async getData() {
-    let response = await fetch('https://dummyjson.com/products');
-    let data = await response.json();
-    return data.products;
+    let response = await fetch('https://dummyjson.com/products?limit=100');
+    DATA = await response.json();
+    return DATA;
   }
 
-  async renderProducts() {
-    let products = await this.getData();
+  async filterProduct() {
+    const filters = document.querySelector('.filter')!;
 
-    products.forEach((product: TProduct) => {
-      let productlist = document.querySelector('.products-list');
+    const categoryes = [
+      ...filters.querySelectorAll('#categories input:checked'),
+    ];
+    console.log('filter');
+  }
+
+  async renderProducts(productlist: HTMLElement) {
+    DATA = await this.getData();
+
+    DATA.products.forEach((product: TProduct) => {
       if (productlist) {
         productlist.innerHTML += `<div class="product">
         <div class="product-img">
@@ -334,6 +217,39 @@ class MainPage extends BaseComponent {
             value="Подробно"
           />
         </div>
+      </div>`;
+      }
+    });
+
+    //render filters
+    this.renderFilter('categories');
+    this.renderFilter('brand');
+  }
+
+  renderFilter(name: string) {
+    let filter: { [key: string]: number } = {};
+
+    let filterlist: string[] = [];
+    DATA.products.forEach((product) => {
+      filterlist.push(product['category']);
+    });
+
+    filter = filterlist.reduce(
+      (acc: { [key: string]: number }, cur: string) => {
+        acc[cur] = (acc[cur] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    let categoriesContainer = document.getElementById(name);
+
+    Object.keys(filter).forEach((key) => {
+      if (categoriesContainer) {
+        categoriesContainer.innerHTML += `<div class="item">
+      <input type="checkbox" id="${key}" name="${key}">
+      <label for="smartphone">${key}</label>
+      <span>${filter[key]}/${filter[key]}</span>
       </div>`;
       }
     });
