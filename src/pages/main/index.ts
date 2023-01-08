@@ -49,7 +49,7 @@ class MainPage extends BaseComponent {
     const filterlist = new BaseComponent('div')
       .setClass('filter-list')
       .render(filterblock);
-    filterlist.id = 'categories';
+    filterlist.id = 'category';
 
     const filterblock2 = new BaseComponent('div')
       .setClass('filter-block')
@@ -169,8 +169,6 @@ class MainPage extends BaseComponent {
       .render(maininner);
 
     this.renderContent(productlist);
-    //this.renderProducts(productlist);
-    //this.renderFilter(filterlist);
   }
 
   async getData() {
@@ -182,17 +180,32 @@ class MainPage extends BaseComponent {
   async filterProduct() {
     const filters = document.querySelector('.filter')!;
 
-    const categoryes = [
-      ...filters.querySelectorAll('#categories input:checked'),
-    ];
-    console.log('filter');
+    const categories = [
+      ...filters.querySelectorAll<HTMLInputElement>('#category input:checked'),
+    ].map((n) => n.value);
+    const brands = [
+      ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
+    ].map((n) => n.value);
+
+    let filteredProducts = DATA.products.filter(
+      (n) =>
+        (!categories.length || categories.includes(n.category)) &&
+        (!brands.length || brands.includes(n.brand)),
+    );
+    console.log(filteredProducts);
+    const container: HTMLElement | null =
+      document.querySelector('.products-list');
+    if (container) {
+      container.innerHTML = '';
+      this.renderProducts(container, filteredProducts);
+    }
   }
 
   async renderContent(container: HTMLElement) {
     DATA = await this.getData();
 
     this.renderProducts(container, DATA.products);
-    this.renderFilter('categories');
+    this.renderFilter('category');
     this.renderFilter('brand');
   }
 
@@ -234,7 +247,11 @@ class MainPage extends BaseComponent {
 
     let filterlist: string[] = [];
     DATA.products.forEach((product) => {
-      filterlist.push(product['category']);
+      if (name === 'category') {
+        filterlist.push(product['category']);
+      } else if (name === 'brand') {
+        filterlist.push(product['brand']);
+      }
     });
 
     filter = filterlist.reduce(
@@ -250,7 +267,7 @@ class MainPage extends BaseComponent {
     Object.keys(filter).forEach((key) => {
       if (categoriesContainer) {
         categoriesContainer.innerHTML += `<div class="item">
-      <input type="checkbox" id="${key}" name="${key}">
+      <input type="checkbox" id="${key}" value="${key}" name="${key}">
       <label for="smartphone">${key}</label>
       <span>${filter[key]}/${filter[key]}</span>
       </div>`;
