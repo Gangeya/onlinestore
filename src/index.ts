@@ -5,13 +5,15 @@ import BaseComponent from './core/templates/component';
 import Header from './core/components/header';
 import Footer from './core/components/footer';
 import MainPage from './pages/main/';
-import AboutPage from './pages/about';
+import ProductPage from './pages/product';
+import CartPage from './pages/cart';
 import Page from './core/templates/page';
 import Link from './core/templates/link';
 
 const routes: Record<string, Page> = {
   main: new MainPage('Main page', 'Main content'),
-  about: new AboutPage('About', 'About page content'),
+  product: new ProductPage('Product', 'Product page content'),
+  cart: new CartPage('Cart', 'Cart page content'),
 };
 
 const notFoundPage = new Page('404', 'Not found');
