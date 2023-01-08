@@ -296,5 +296,254 @@ footer{
   font-weight: 700;
 }
 
+/* cart-page */
+/* credit card */
+.modal{
+  padding: 20px 40px;
+  max-width: 500px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%), 0 6px 15px 0 rgb(0 0 0 / 10%);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  gap: 15px;
+  width: 100%;
+  background-color: white;
+  max-width: 400px;
+  display: none;
+  z-index: 2;
+}
+.modal-block{
+  position: relative;
+  display: flex;
+}
 
+#name, #tel, #address,
+#email, #card, #expcard,#cvv{
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  width: 100%;
+}
+.fa-circle-exclamation{
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #da002b;
+}
+.modal-block > i{
+  display: none;
+}
 
+.card-info{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 350px;
+  gap: 18px;
+  margin: 0 40px;
+}
+.card-info-title{
+  font-size: 20px;
+  color: #2f4858;
+  font-weight: 700;
+}
+.card-block{
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+.card-block > img{
+  width: 40px;
+}
+.private-data{
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  text-align: center;
+}
+#card{
+  width: 100%;
+}
+#expcard, #cvv{
+  width: 90px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.confirm-block{
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
+.confirm{
+  align-items: center;
+  background: #da002b;
+  border: 1px solid #f2f2f2;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 20px;
+  padding: 10px 24px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.pop-up-bg{
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  background: black;
+  opacity: 0.5;
+  top: 0;
+  display: none;
+}
+h1{
+  color: #2f4858;
+}
+.products-cart{
+  width: 70%;
+}
+.cart-details{
+  width: 30%;
+  /* display: flex;
+  justify-content: center; */
+  padding: 20px 0;  
+}
+.cart-details-inner{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%), 0 6px 15px 0 rgb(0 0 0 / 10%);
+  border-radius: 15px;
+  padding: 25px;
+  gap: 15px;
+  width: 75%;
+}
+.cart-details-inner > h3{
+  font-size: 26px;
+  color: #2f4858;
+  margin: 0;
+  border-bottom: solid 2px #ce1111;
+  width: 100%;
+}
+.promo-block-active{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.promo-block-active{
+  display: none;
+}
+.products-cart-top{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.page-block{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 20%;
+}
+.arrow, .minus, .plus, .promo-code-active{
+  background: #da002b;
+  border: 1px solid #f2f2f2;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 10px;
+}
+.minus, .plus{
+  width: 29px;
+}
+.product-block{
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  margin: 15px 20px;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%), 0 6px 15px 0 rgb(0 0 0 / 10%);
+  border-radius: 25px;
+}
+.page, .num{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 10%;
+  color: #2f4858;
+}
+.product-block > img{
+  width: 130px;
+  padding: 5px 10px;
+  border-radius: 20px;
+}
+.product-card{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 70%;
+  padding: 5px 10px;
+}
+.product-card > h3{
+  margin: 0;
+  border-bottom: solid 1px #ce1111;
+}
+.product-card-desc{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rating-block, .discount-block{
+  color: #C40563;
+}
+.product-card-other{
+  display: flex;
+  justify-content: space-evenly;
+}
+.stock-block{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 20%;
+  padding: 5px 10px;
+  gap: 5px;
+}
+.product-card-title, .stock, .amount{
+  display: flex;
+  justify-content: center;
+}
+.stock-control{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.limit-block{
+  display: flex;
+  align-items: center;
+}
+.limit, .promo-code{
+  height: 14px;
+}
+.limit{
+  max-width: 100px;
+}
+.amount{
+  font-size: 18px;
+  font-weight: 700;
+}

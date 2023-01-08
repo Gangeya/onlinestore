@@ -18,7 +18,7 @@ class Header extends BaseComponent {
     // new BaseComponent('div').setClass('total-price').setContent('100 $').render(this);
     const cartlink=new BaseComponent('a').setClass('cart-link').setAttribute('href','#cart').render(cart);
     new BaseComponent('img').setAttribute('src', cartimg).setAttribute('width', '32').setAttribute('heigth', '32').render(cartlink);
-    new BaseComponent('span').setClass('cart-count').setContent('2').render(cart);
+    new BaseComponent('span').setClass('cart-count').setContent('2').render(cartlink);
     const bread=new BaseComponent('div').setClass('breadcrumbs').render(this);
     const breadul=new BaseComponent('ul').setClass('breadcrumbs-list').render(bread);
     const limain=new BaseComponent('li').render(breadul);
