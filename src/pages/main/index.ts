@@ -1,135 +1,312 @@
 import BaseComponent from '../../core/templates/component';
-const view1 = require('../../assets/images/view1.png');
-const view2 = require('../../assets/images/view2.png');
-const thumbnail = require('../../assets/images/thumbnail.jpg');
+const view1 = <string>require('../../assets/images/view1.png');
+const view2 = <string>require('../../assets/images/view2.png');
+
+import { IProducts } from '../../core/types';
+import { TProduct } from '../../core/types';
+
+let DATA: IProducts;
 
 class MainPage extends BaseComponent {
   constructor(title: string, content: string) {
     super('main');
-    // new BaseComponent('h1').setContent(title).render(this);
-    // new BaseComponent('p').setContent(content).render(this);
-    // new BaseComponent('aside').setContent('This is Aside').render(this);
-    // new BaseComponent('article').setContent('This is Article').render(this);
-    const main=new BaseComponent('div').setClass('main').setClass('container').render(this);
+
+    const main = new BaseComponent('div')
+      .setClass('main')
+      .setClass('container')
+      .render(this);
     //ASIDE
-    const aside=new BaseComponent('aside').render(main);
-    const filter=new BaseComponent('div').setClass('filter').render(aside);
-    const filterinner=new BaseComponent('div').setClass('filter-inner').render(filter);
-    const filterbuttons=new BaseComponent('div').setClass('filter-buttons').render(filterinner);
-    new BaseComponent('button').setClass('reset').setContent('Reset').render(filterbuttons);
-    new BaseComponent('button').setClass('copy').setContent('Copy').render(filterbuttons);
+    const aside = new BaseComponent('aside').render(main);
+    const filter = new BaseComponent('div')
+      .setClass('filter')
+      .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
+      .render(aside);
+    const filterinner = new BaseComponent('div')
+      .setClass('filter-inner')
+      .render(filter);
+    const filterbuttons = new BaseComponent('div')
+      .setClass('filter-buttons')
+      .render(filterinner);
+    new BaseComponent('button')
+      .setClass('reset')
+      .setContent('Reset')
+      .render(filterbuttons);
+    new BaseComponent('button')
+      .setClass('copy')
+      .setContent('Copy')
+      .render(filterbuttons);
 
-    const filterblock=new BaseComponent('div').setClass('filter-block').render(filterinner);
-    new BaseComponent('div').setClass('filter-title').setContent('Category').render(filterblock);
-    
+    const filterblock = new BaseComponent('div')
+      .setClass('filter-block')
+      .render(filterinner);
+    new BaseComponent('div')
+      .setClass('filter-title')
+      .setContent('Category')
+      .render(filterblock);
+
     //filter list
-    const filterlist=new BaseComponent('div').setClass('filter-list').render(filterblock);
-    const item=new BaseComponent('div').setClass('item').render(filterlist);
-    new BaseComponent('input').setAttribute('type','checkbox').setAttribute('id','smartphone').setAttribute('name','smartphone').render(item);
-    new BaseComponent('label').setAttribute('for','smartphone').setContent('Smartphone').render(item);
-    new BaseComponent('span').setContent('1/1').render(item);
-    
-    const item2=new BaseComponent('div').setClass('item').render(filterlist);
-    new BaseComponent('input').setAttribute('type','checkbox').setAttribute('id','smartphone').setAttribute('name','smartphone').render(item2);
-    new BaseComponent('label').setAttribute('for','smartphone').setContent('Smartphone').render(item2);
-    new BaseComponent('span').setContent('1/1').render(item2);
+    const filterlist = new BaseComponent('div')
+      .setClass('filter-list')
+      .render(filterblock);
+    filterlist.id = 'category';
 
-    const filterblock2=new BaseComponent('div').setClass('filter-block').render(filterinner);
-    new BaseComponent('div').setClass('filter-title').setContent('Brand').render(filterblock2);
+    const filterblock2 = new BaseComponent('div')
+      .setClass('filter-block')
+      .render(filterinner);
+    new BaseComponent('div')
+      .setClass('filter-title')
+      .setContent('Brand')
+      .render(filterblock2);
 
     //filter list2
-    const filterlist2=new BaseComponent('div').setClass('filter-list').render(filterblock2);
-    const item11=new BaseComponent('div').setClass('item').render(filterlist2);
-    new BaseComponent('input').setAttribute('type','checkbox').setAttribute('id','apple').setAttribute('name','apple').render(item11);
-    new BaseComponent('label').setAttribute('for','apple').setContent('Apple').render(item11);
-    new BaseComponent('span').setContent('1/1').render(item11);
-    
-    const item22=new BaseComponent('div').setClass('item').render(filterlist2);
-    new BaseComponent('input').setAttribute('type','checkbox').setAttribute('id','samsung').setAttribute('name','samsung').render(item22);
-    new BaseComponent('label').setAttribute('for','samsung').setContent('Samsung').render(item22);
-    new BaseComponent('span').setContent('1/1').render(item22);
-
-    const item33=new BaseComponent('div').setClass('item').render(filterlist2);
-    new BaseComponent('input').setAttribute('type','checkbox').setAttribute('id','huawie').setAttribute('name','huawie').render(item33);
-    new BaseComponent('label').setAttribute('for','huawie').setContent('Huawie').render(item33);
-    new BaseComponent('span').setContent('1/1').render(item33);
+    const filterlist2 = new BaseComponent('div')
+      .setClass('filter-list')
+      .render(filterblock2);
+    filterlist2.id = 'brand';
 
     //block price range
-    const filterblock3=new BaseComponent('div').setClass('filter-block').render(filterinner);
-    new BaseComponent('div').setClass('filter-title').setContent('Price').render(filterblock3);
-    const data=new BaseComponent('div').render(filterblock3);
+    const filterblock3 = new BaseComponent('div')
+      .setClass('filter-block')
+      .render(filterinner);
+    new BaseComponent('div')
+      .setClass('filter-title')
+      .setContent('Price')
+      .render(filterblock3);
+    const data = new BaseComponent('div').render(filterblock3);
     new BaseComponent('span').setContent('500$').render(data);
-    const range=new BaseComponent('div').setClass('range').render(filterblock3);
-    new BaseComponent('input').setAttribute('type','range').setClass('range-price').setAttribute('min','1').setAttribute('max','100').render(range);
+    const range = new BaseComponent('div')
+      .setClass('range')
+      .render(filterblock3);
+    new BaseComponent('input')
+      .setAttribute('type', 'range')
+      .setClass('range-price')
+      .setAttribute('min', '1')
+      .setAttribute('max', '100')
+      .render(range);
 
     //block stock range
-    const filterblock4=new BaseComponent('div').setClass('filter-block').render(filterinner);
-    new BaseComponent('div').setClass('filter-title').setContent('Stock').render(filterblock4);
-    const data2=new BaseComponent('div').render(filterblock4);
+    const filterblock4 = new BaseComponent('div')
+      .setClass('filter-block')
+      .render(filterinner);
+    new BaseComponent('div')
+      .setClass('filter-title')
+      .setContent('Stock')
+      .render(filterblock4);
+    const data2 = new BaseComponent('div').render(filterblock4);
     new BaseComponent('span').setContent('10').render(data2);
-    const range2=new BaseComponent('div').setClass('range').render(filterblock4);
-    new BaseComponent('input').setAttribute('type','range').setClass('range-stock').setAttribute('min','1').setAttribute('max','500').render(range2);
+    const range2 = new BaseComponent('div')
+      .setClass('range')
+      .render(filterblock4);
+    new BaseComponent('input')
+      .setAttribute('type', 'range')
+      .setClass('range-stock')
+      .setAttribute('min', '1')
+      .setAttribute('max', '500')
+      .render(range2);
 
     //CONTENT
-    const contents=new BaseComponent('div').setClass('content').render(main);
-    const maininner=new BaseComponent('div').setClass('main-inner').render(contents);
+    const contents = new BaseComponent('div').setClass('content').render(main);
+    const maininner = new BaseComponent('div')
+      .setClass('main-inner')
+      .render(contents);
     //MAIN TOP
-    const maintop=new BaseComponent('div').setClass('main-top').render(maininner);
+    const maintop = new BaseComponent('div')
+      .setClass('main-top')
+      .render(maininner);
 
-    const sort=new BaseComponent('div').setClass('sort-block').render(maintop);
-    const select=new BaseComponent('select').setClass('sort').render(sort);
-    new BaseComponent('option').setAttribute('value','price-asc').setContent('Sort by price ASC').render(select);
-    new BaseComponent('option').setAttribute('value','price-desc').setContent('Sort by price DESC').render(select);
-    new BaseComponent('option').setAttribute('value','reting-asc').setContent('Sort by reting ASC').render(select);
-    new BaseComponent('option').setAttribute('value','reting-desc').setContent('Sort by reting DESC').render(select);
+    const sort = new BaseComponent('div')
+      .setClass('sort-block')
+      .render(maintop);
+    const select = new BaseComponent('select').setClass('sort').render(sort);
+    new BaseComponent('option')
+      .setAttribute('value', 'price-asc')
+      .setContent('Sort by price ASC')
+      .render(select);
+    new BaseComponent('option')
+      .setAttribute('value', 'price-desc')
+      .setContent('Sort by price DESC')
+      .render(select);
+    new BaseComponent('option')
+      .setAttribute('value', 'reting-asc')
+      .setContent('Sort by reting ASC')
+      .render(select);
+    new BaseComponent('option')
+      .setAttribute('value', 'reting-desc')
+      .setContent('Sort by reting DESC')
+      .render(select);
 
-    new BaseComponent('div').setClass('found').setContent('100').render(maintop);
+    new BaseComponent('div')
+      .setClass('found')
+      .setContent('100')
+      .render(maintop);
 
-    const search=new BaseComponent('div').setClass('search-block').render(maintop);
-    new BaseComponent('input').setAttribute('type','text').setClass('search').setAttribute('placeholder','Search').render(search);
+    const search = new BaseComponent('div')
+      .setClass('search-block')
+      .render(maintop);
+    new BaseComponent('input')
+      .setAttribute('type', 'text')
+      .setClass('search')
+      .setAttribute('placeholder', 'Search')
+      .render(search);
 
-    const view=new BaseComponent('div').setClass('view').render(maintop);
-    new BaseComponent('img').setAttribute('src',view1).setAttribute('height','27').render(view);
-    new BaseComponent('img').setAttribute('src',view2).setAttribute('width','27').render(view);
+    const view = new BaseComponent('div').setClass('view').render(maintop);
+    new BaseComponent('img')
+      .setAttribute('src', view1)
+      .setAttribute('height', '27')
+      .render(view);
+    new BaseComponent('img')
+      .setAttribute('src', view2)
+      .setAttribute('width', '27')
+      .render(view);
 
     //PRODUCT LIST
-    const productlist=new BaseComponent('div').setClass('products-list').render(maininner);
-    //PRODUCT
-    for(let i:number=0;i<12;i+=1){
-    const product=new BaseComponent('div').setClass('product').render(productlist);
-    const productimg=new BaseComponent('div').setClass('product-img').render(product);
-    new BaseComponent('img').setAttribute('src',thumbnail).setAttribute('width','220').render(productimg);
-    new BaseComponent('div').setClass('product-title').setContent('Iphone 9').render(product);
-    const info=new BaseComponent('div').setClass('product-info').render(product);
-    const productbottom=new BaseComponent('div').setClass('product-bottom').render(product);
-    new BaseComponent('input').setAttribute('type','button').setClass('tocart').setAttribute('value','В корзину').render(productbottom);
-    new BaseComponent('input').setAttribute('type','button').setClass('more').setAttribute('value','Подробно').render(productbottom);
-    
-    const infocat=new BaseComponent('div').setClass('info').setClass('category').render(info);
-    new BaseComponent('span').setContent('Category').render(infocat);
-    new BaseComponent('span').setContent('Smartphone').render(infocat);
-    
-    const infobrand=new BaseComponent('div').setClass('info').setClass('brand').render(info);
-    new BaseComponent('span').setContent('Brand').render(infobrand);
-    new BaseComponent('span').setContent('Apple').render(infobrand);
+    const productlist = new BaseComponent('div')
+      .setClass('products-list')
+      .render(maininner);
 
-    const infoprice=new BaseComponent('div').setClass('info').setClass('price').render(info);
-    new BaseComponent('span').setContent('Price').render(infoprice);
-    new BaseComponent('span').setContent('400$').render(infoprice);
+    this.renderContent(productlist);
+  }
 
-    const infodiscount=new BaseComponent('div').setClass('info').setClass('discount').render(info);
-    new BaseComponent('span').setContent('Discount').render(infodiscount);
-    new BaseComponent('span').setContent('10%').render(infodiscount);
+  async getData() {
+    const response = await fetch('https://dummyjson.com/products?limit=100');
+    DATA = await response.json();
+    return DATA;
+  }
 
-    const inforating=new BaseComponent('div').setClass('info').setClass('rating').render(info);
-    new BaseComponent('span').setContent('Rating').render(inforating);
-    new BaseComponent('span').setContent('4.8').render(inforating);
+  async filterProduct() {
+    const filters = document.querySelector('.filter')!;
 
-    const infostock=new BaseComponent('div').setClass('info').setClass('stock').render(info);
-    new BaseComponent('span').setContent('Stock').render(infostock);
-    new BaseComponent('span').setContent('55').render(infostock);
+    const categories = [
+      ...filters.querySelectorAll<HTMLInputElement>('#category input:checked'),
+    ].map((n) => n.value);
 
+    const brands = [
+      ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
+    ].map((n) => n.value);
+
+    const filteredProducts = DATA.products.filter(
+      (n) =>
+        (!categories.length || categories.includes(n.category)) &&
+        (!brands.length || brands.includes(n.brand)),
+    );
+
+    this.setCountProducts(filteredProducts, 'category');
+    this.setCountProducts(filteredProducts, 'brand');
+
+    const container: HTMLElement | null =
+      document.querySelector('.products-list');
+    if (container) {
+      container.innerHTML = '';
+      this.renderProducts(container, filteredProducts);
     }
+  }
+
+  setCountProducts(data: TProduct[], typefilter: string): void {
+    const list: string[] = [];
+    DATA.products.forEach((product) => {
+      if (typefilter === 'category') {
+        list.push(product.category);
+      } else if (typefilter === 'brand') {
+        list.push(product.brand);
+      }
+    });
+
+    const set = new Set(list);
+
+    let count: number;
+    let mask = 0;
+    set.forEach((item) => {
+      if (typefilter === 'category') {
+        count = data.filter((n) => n.category === item).length;
+      } else if (typefilter === 'brand') {
+        count = data.filter((n) => n.brand === item).length;
+      }
+
+      const dataset = mask + item.replace(/[\s.,'&%]/g, '');
+
+      const spanCount = document.querySelector(`[data-${dataset}]`);
+      if (spanCount) {
+        spanCount.innerHTML = count + spanCount.innerHTML.slice(1);
+      }
+      mask += 1;
+    });
+  }
+
+  async renderContent(container: HTMLElement) {
+    DATA = await this.getData();
+
+    this.renderProducts(container, DATA.products);
+    this.renderFilter('category');
+    this.renderFilter('brand');
+  }
+
+  renderProducts(container: HTMLElement, data: TProduct[]) {
+    data.forEach((product: TProduct) => {
+      if (container) {
+        container.innerHTML += `<div class="product">
+        <div class="product-img">
+          <img
+            src="${product.thumbnail}"
+            width="220"
+          />
+        </div>
+        <div class="product-title">${product.title}</div>
+        <div class="product-info">
+          <div class="info category">
+            <span>Category</span><span>${product.category}</span>
+          </div>
+          <div class="info brand"><span>Brand</span><span>${product.brand}</span></div>
+          <div class="info price"><span>Price</span><span>${product.price}</span></div>
+          <div class="info discount"><span>Discount</span><span>${product.discountPercentage}</span></div>
+          <div class="info rating"><span>Rating</span><span>${product.rating}</span></div>
+          <div class="info stock"><span>Stock</span><span>${product.stock}</span></div>
+        </div>
+        <div class="product-bottom">
+          <input type="button" class="tocart" value="В корзину" /><input
+            type="button"
+            class="more"
+            value="Подробно"
+          />
+        </div>
+      </div>`;
+      }
+    });
+  }
+
+  renderFilter(name: string) {
+    let filter: { [key: string]: number } = {};
+
+    const filterlist: string[] = [];
+    DATA.products.forEach((product) => {
+      if (name === 'category') {
+        filterlist.push(product.category);
+      } else if (name === 'brand') {
+        filterlist.push(product.brand);
+      }
+    });
+
+    filter = filterlist.reduce(
+      (acc: { [key: string]: number }, cur: string) => {
+        acc[cur] = (acc[cur] || 0) + 1;
+        return acc;
+      },
+      {},
+    );
+
+    const categoriesContainer = document.getElementById(name);
+    let mask = 0;
+    Object.keys(filter).forEach((key) => {
+      const dataset = mask + key.replace(/[\s.,'&%]/g, '');
+
+      if (categoriesContainer) {
+        categoriesContainer.innerHTML += `<div class="item">
+      <input type="checkbox" id="${key}" value="${key}" name="${key}">
+      <label for="smartphone">${key}</label>
+      <span data-${dataset}>${filter[key]}/${filter[key]}</span>
+      </div>`;
+      }
+      mask += 1;
+    });
   }
 }
 

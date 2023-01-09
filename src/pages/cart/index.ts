@@ -7,19 +7,22 @@ class CartPage extends BaseComponent {
   constructor(title: string, content: string) {
     super('main');
     Promise.resolve()
-    .then(() => {
-      const main=new BaseComponent('div').setClass('main').setClass('container').render(this);
-      return main;
-    })
-    .then((e) => {
-      this.renderCart(e);
-    });
-    
+      .then(() => {
+        const main = new BaseComponent('div')
+          .setClass('main')
+          .setClass('container')
+          .render(this);
+        return main;
+      })
+      .then((e) => {
+        this.renderCart(e);
+      });
   }
-  renderCart(e:HTMLElement) {
-    let cart=e;
-    if(cart){
-    cart.innerHTML+=`<div class="products-cart">
+
+  renderCart(e: HTMLElement) {
+    const cart = e;
+    if (cart) {
+      cart.innerHTML += `<div class="products-cart">
           <div class="products-cart-inner">
             <div class="products-cart-top">
               <h1>Товары в корзине</h1>
