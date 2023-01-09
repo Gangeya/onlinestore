@@ -8,8 +8,7 @@ class BaseComponent {
   render(parent: HTMLElement | BaseComponent) {
     if (parent instanceof HTMLElement) {
       parent.append(this.element);
-    } 
-    else {
+    } else {
       parent.element.append(this.element);
     }
     return this.element;

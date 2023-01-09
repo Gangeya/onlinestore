@@ -3,24 +3,29 @@ import BaseComponent from '../../core/templates/component';
 class ProductPage extends BaseComponent {
   constructor(title: string, content: string) {
     super('main');
-    
+
     // const productcontent=new BaseComponent('div').setClass('product-content').render(main);
-    
+
     Promise.resolve()
-    .then(() => {
-      const main=new BaseComponent('div').setClass('main').setClass('container').render(this);
-      const productcontent=new BaseComponent('div').setClass('product-content').render(main);
-      return productcontent;
-    })
-    .then((e) => {
-      this.renderProductContent(e);
-    });
-    
+      .then(() => {
+        const main = new BaseComponent('div')
+          .setClass('main')
+          .setClass('container')
+          .render(this);
+        const productcontent = new BaseComponent('div')
+          .setClass('product-content')
+          .render(main);
+        return productcontent;
+      })
+      .then((e) => {
+        this.renderProductContent(e);
+      });
   }
-  renderProductContent(e:HTMLElement) {
-    let productcontent=e;
-    if(productcontent){
-    productcontent.innerHTML+=`
+
+  renderProductContent(e: HTMLElement) {
+    const productcontent = e;
+    if (productcontent) {
+      productcontent.innerHTML += `
     <div class="product-content-inner">
       <div class="product-title"><h1>Iphone 9</h1></div>
       <div class="image-block">

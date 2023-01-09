@@ -1,12 +1,11 @@
 import BaseComponent from '../../core/templates/component';
-const view1 = require('../../assets/images/view1.png');
-const view2 = require('../../assets/images/view2.png');
-const thumbnail = require('../../assets/images/thumbnail.jpg');
+const view1 = <string>require('../../assets/images/view1.png');
+const view2 = <string>require('../../assets/images/view2.png');
+
 import { IProducts } from '../../core/types';
 import { TProduct } from '../../core/types';
 
 let DATA: IProducts;
-//let test: string;
 
 class MainPage extends BaseComponent {
   constructor(title: string, content: string) {
@@ -20,7 +19,7 @@ class MainPage extends BaseComponent {
     const aside = new BaseComponent('aside').render(main);
     const filter = new BaseComponent('div')
       .setClass('filter')
-      .setHandler('input', (e) => this.filterProduct())
+      .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
       .render(aside);
     const filterinner = new BaseComponent('div')
       .setClass('filter-inner')
@@ -64,9 +63,6 @@ class MainPage extends BaseComponent {
       .setClass('filter-list')
       .render(filterblock2);
     filterlist2.id = 'brand';
-    const item11 = new BaseComponent('div')
-      .setClass('item')
-      .render(filterlist2);
 
     //block price range
     const filterblock3 = new BaseComponent('div')
@@ -172,7 +168,7 @@ class MainPage extends BaseComponent {
   }
 
   async getData() {
-    let response = await fetch('https://dummyjson.com/products?limit=100');
+    const response = await fetch('https://dummyjson.com/products?limit=100');
     DATA = await response.json();
     return DATA;
   }
@@ -183,22 +179,57 @@ class MainPage extends BaseComponent {
     const categories = [
       ...filters.querySelectorAll<HTMLInputElement>('#category input:checked'),
     ].map((n) => n.value);
+
     const brands = [
       ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
     ].map((n) => n.value);
 
-    let filteredProducts = DATA.products.filter(
+    const filteredProducts = DATA.products.filter(
       (n) =>
         (!categories.length || categories.includes(n.category)) &&
         (!brands.length || brands.includes(n.brand)),
     );
-    console.log(filteredProducts);
+
+    this.setCountProducts(filteredProducts, 'category');
+    this.setCountProducts(filteredProducts, 'brand');
+
     const container: HTMLElement | null =
       document.querySelector('.products-list');
     if (container) {
       container.innerHTML = '';
       this.renderProducts(container, filteredProducts);
     }
+  }
+
+  setCountProducts(data: TProduct[], typefilter: string): void {
+    const list: string[] = [];
+    DATA.products.forEach((product) => {
+      if (typefilter === 'category') {
+        list.push(product.category);
+      } else if (typefilter === 'brand') {
+        list.push(product.brand);
+      }
+    });
+
+    const set = new Set(list);
+
+    let count: number;
+    let mask = 0;
+    set.forEach((item) => {
+      if (typefilter === 'category') {
+        count = data.filter((n) => n.category === item).length;
+      } else if (typefilter === 'brand') {
+        count = data.filter((n) => n.brand === item).length;
+      }
+
+      const dataset = mask + item.replace(/[\s.,'&%]/g, '');
+
+      const spanCount = document.querySelector(`[data-${dataset}]`);
+      if (spanCount) {
+        spanCount.innerHTML = count + spanCount.innerHTML.slice(1);
+      }
+      mask += 1;
+    });
   }
 
   async renderContent(container: HTMLElement) {
@@ -245,12 +276,12 @@ class MainPage extends BaseComponent {
   renderFilter(name: string) {
     let filter: { [key: string]: number } = {};
 
-    let filterlist: string[] = [];
+    const filterlist: string[] = [];
     DATA.products.forEach((product) => {
       if (name === 'category') {
-        filterlist.push(product['category']);
+        filterlist.push(product.category);
       } else if (name === 'brand') {
-        filterlist.push(product['brand']);
+        filterlist.push(product.brand);
       }
     });
 
@@ -262,16 +293,19 @@ class MainPage extends BaseComponent {
       {},
     );
 
-    let categoriesContainer = document.getElementById(name);
-
+    const categoriesContainer = document.getElementById(name);
+    let mask = 0;
     Object.keys(filter).forEach((key) => {
+      const dataset = mask + key.replace(/[\s.,'&%]/g, '');
+
       if (categoriesContainer) {
         categoriesContainer.innerHTML += `<div class="item">
       <input type="checkbox" id="${key}" value="${key}" name="${key}">
       <label for="smartphone">${key}</label>
-      <span>${filter[key]}/${filter[key]}</span>
+      <span data-${dataset}>${filter[key]}/${filter[key]}</span>
       </div>`;
       }
+      mask += 1;
     });
   }
 }
