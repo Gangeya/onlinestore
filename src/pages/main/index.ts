@@ -30,6 +30,7 @@ class MainPage extends BaseComponent {
     new BaseComponent('button')
       .setClass('reset')
       .setContent('Reset')
+      .setHandler('click', () => this.resetFilters())
       .render(filterbuttons);
     new BaseComponent('button')
       .setClass('copy')
@@ -307,6 +308,17 @@ class MainPage extends BaseComponent {
       }
       mask += 1;
     });
+  }
+
+  resetFilters() {
+    const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+      'input[type="checkbox"]',
+    );
+    inputs.forEach((input) => {
+      input.checked = false;
+    });
+
+    this.filterProduct();
   }
 }
 

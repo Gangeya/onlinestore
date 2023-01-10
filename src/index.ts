@@ -40,7 +40,7 @@ export default class App {
   }
 
   start() {
-    alert('Уважаемый, проверяющий! Дай нам еще 2 дня допилить проект!))');
+    //alert('Уважаемый, проверяющий! Дай нам еще 2 дня допилить проект!))');
     const nav = new BaseComponent('nav').setClass('d-none');
     const footer = new Footer('footer', 'footer');
 
