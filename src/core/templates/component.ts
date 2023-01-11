@@ -48,6 +48,11 @@ class BaseComponent {
     return this;
   }
 
+  setHTML(htmlcode: string) {
+    this.element.innerHTML = htmlcode;
+    return this;
+  }
+
   setHandler(event: keyof HTMLElementEventMap, callback: (e: Event) => void) {
     this.element.addEventListener(event, callback);
     return this;

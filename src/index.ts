@@ -43,6 +43,11 @@ export default class App {
     //alert('Уважаемый, проверяющий! Дай нам еще 2 дня допилить проект!))');
     const nav = new BaseComponent('nav').setClass('d-none');
     const footer = new Footer('footer', 'footer');
+    const popupbg = new BaseComponent('div')
+      .setClass('pop-up-bg')
+      .setHandler('click', () => {
+        this.popbg();
+      });
 
     Object.keys(routes).forEach((route) => {
       new Link(route).render(nav);
@@ -54,6 +59,12 @@ export default class App {
     this.handleRouteChange();
     window.onpopstate = () => this.handleRouteChange();
     this.container.insertAdjacentElement('beforeend', footer.render());
+    popupbg.render(this.container);
+  }
+
+  popbg() {
+    (<HTMLElement>document.querySelector('.pop-up-bg')).style.display = 'none';
+    (<HTMLElement>document.querySelector('.modal')).style.display = 'none';
   }
 }
 
