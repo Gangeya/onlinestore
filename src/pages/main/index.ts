@@ -226,21 +226,26 @@ class MainPage extends BaseComponent {
     this.renderProducts(container, DATA.products);
     this.renderFilter('category');
     this.renderFilter('brand');
-    this.renderRangePrice(DATA.products);
-    //this.renderRange(DATA.products);
+    this.renderRange(DATA.products, 'price');
+    this.renderRange(DATA.products, 'stock');
   }
 
-  renderRangePrice(data: TProduct[]) {
+  renderRange(data: TProduct[], type: string): void {
     let valuesForSlider: number[] = [];
 
-    data.forEach((product) => {
-      valuesForSlider.push(product.price);
-    });
+    if (type === 'price') {
+      data.forEach((product) => {
+        valuesForSlider.push(product.price);
+      });
+    } else if (type === 'stock') {
+      data.forEach((product) => {
+        valuesForSlider.push(product.stock);
+      });
+    }
 
     valuesForSlider = [...new Set(valuesForSlider)].sort((a, b) => a - b);
     let min = Math.min(...valuesForSlider);
     let max = Math.max(...valuesForSlider);
-    console.log(valuesForSlider);
 
     let format = {
       to: function (value: number) {
@@ -250,9 +255,9 @@ class MainPage extends BaseComponent {
         return valuesForSlider.indexOf(Number(value));
       },
     };
-    const rangePrice = document.getElementById('slider-price');
-    if (rangePrice) {
-      noUiSlider.create(rangePrice, {
+    const range = document.getElementById(`slider-${type}`);
+    if (range) {
+      noUiSlider.create(range, {
         start: [min, max],
         // A linear range from 0 to 15 (16 values)
         range: { min: 0, max: valuesForSlider.length - 1 },

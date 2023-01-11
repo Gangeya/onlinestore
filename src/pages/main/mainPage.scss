@@ -236,7 +236,8 @@ input[type='range']::-webkit-slider-thumb {
   text-align: center;
 }
 
-#slider-price {
+#slider-price,
+#slider-stock {
   height: 10px;
   .noUi-connect {
     background: #da002b;
