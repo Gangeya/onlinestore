@@ -77,7 +77,7 @@ class CartPage extends BaseComponent {
         const cardinfo=new BaseComponent('div').setClass('card-info').render(modal);
         new BaseComponent('p').setClass('card-info-title').setContent('Кредитная карта').render(cardinfo);
         const cardblock=new BaseComponent('div').setClass('card-block').render(cardinfo);
-        new BaseComponent('img').setClass('card-img').setAttribute('src',mastercard).setAttribute('width','60').render(cardblock);
+        new BaseComponent('img').setClass('card-img').setAttribute('src',mastercard).setAttribute('width','60').setAttribute('height','40').render(cardblock);
         const modalblock1=new BaseComponent('div').setClass('modal-block').render(cardblock);
         const cardnumber:HTMLElement=new BaseComponent('input').setHandler('input',(e)=>this.checkCardNumber(cardnumber,e)).setAttribute('type','text').setAttribute('id','card').setAttribute('placeholder','Номер карты').render(modalblock1);
         new BaseComponent('i').setAttribute('name','card').setClass('fa-solid').setClass('fa-circle-exclamation').render(modalblock1);
@@ -258,7 +258,7 @@ class CartPage extends BaseComponent {
     }
 
     //expcard
-    if((<HTMLInputElement>document.querySelector('#expcard')).value.length!==5){
+    if((<HTMLInputElement>document.querySelector('#expcard')).value.length!==5  && Number((<HTMLInputElement>document.querySelector('#expcard')).value.split('/')[0])<13 && Number((<HTMLInputElement>document.querySelector('#expcard')).value.split('/')[0])>0){
       (<HTMLInputElement>document.querySelector('#expcard')?.nextElementSibling).style.display='block';
     }
     else{
