@@ -274,7 +274,8 @@ class CartPage extends BaseComponent {
       c++;
     }
     if(c===7){
-      alert("Заказ оформлен!")
+      alert("Заказ оформлен!");
+      (<HTMLElement>document.querySelector('.pop-up-bg')).style.display='none';
       setTimeout(()=>window. location. href  = "/#main",3000);
     }
   }
