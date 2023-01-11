@@ -22,11 +22,11 @@ class Header extends BaseComponent {
     const totalincart = new BaseComponent('div')
       .setClass('total-in-cart')
       .render(cartblock);
-    new BaseComponent('span').setContent('Итого в корзине: ').render(cartblock);
+    new BaseComponent('span').setContent('Итого в корзине: ').render(totalincart);
     new BaseComponent('span')
       .setClass('total-price')
       .setContent('1 258 $')
-      .render(cartblock);
+      .render(totalincart);
     const cart = new BaseComponent('div').setClass('cart').render(cartblock);
     // new BaseComponent('div').setClass('total-price').setContent('100 $').render(this);
     const cartlink = new BaseComponent('a')
