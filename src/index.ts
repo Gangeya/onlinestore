@@ -59,6 +59,7 @@ export default class App {
     this.handleRouteChange();
     window.onpopstate = () => this.handleRouteChange();
     this.container.insertAdjacentElement('beforeend', footer.render());
+    popupbg.render(this.container);
   }
 
   popbg() {
