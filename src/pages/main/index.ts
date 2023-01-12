@@ -1,5 +1,6 @@
 import BaseComponent from '../../core/templates/component';
-import noUiSlider from 'nouislider';
+//import noUiSlider from 'nouislider';
+import * as noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 const view1 = <string>require('../../assets/images/view1.png');
 const view2 = <string>require('../../assets/images/view2.png');
@@ -161,7 +162,20 @@ class MainPage extends BaseComponent {
     return DATA;
   }
 
-  async filterProduct() {
+  async renderContent(container: HTMLElement) {
+    DATA = await this.getData();
+
+    this.renderProducts(container, DATA.products);
+    this.renderFilter('category');
+    this.renderFilter('brand');
+    this.renderRange(DATA.products, 'price');
+    this.renderRange(DATA.products, 'stock');
+  }
+
+  async filterProduct(
+    startPrice?: number | string,
+    endPrice?: number | string,
+  ) {
     const filters = document.querySelector('.filter')!;
 
     const categories = [
@@ -172,14 +186,23 @@ class MainPage extends BaseComponent {
       ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
     ].map((n) => n.value);
 
+    const range = document.getElementById('slider-price') as noUiSlider.target;
+    const rangePrice = range.noUiSlider?.get() as number[];
+
+    let startPr = startPrice || rangePrice[0];
+    let endPr = endPrice || rangePrice[1];
+
     const filteredProducts = DATA.products.filter(
       (n) =>
         (!categories.length || categories.includes(n.category)) &&
-        (!brands.length || brands.includes(n.brand)),
+        (!brands.length || brands.includes(n.brand)) &&
+        (!startPr || startPr <= n.price) &&
+        (!endPr || endPr >= n.price),
     );
 
     this.setCountProducts(filteredProducts, 'category');
     this.setCountProducts(filteredProducts, 'brand');
+    this.renderRange(filteredProducts, 'price');
 
     const container: HTMLElement | null =
       document.querySelector('.products-list');
@@ -220,16 +243,6 @@ class MainPage extends BaseComponent {
     });
   }
 
-  async renderContent(container: HTMLElement) {
-    DATA = await this.getData();
-
-    this.renderProducts(container, DATA.products);
-    this.renderFilter('category');
-    this.renderFilter('brand');
-    this.renderRange(DATA.products, 'price');
-    this.renderRange(DATA.products, 'stock');
-  }
-
   renderRange(data: TProduct[], type: string): void {
     let valuesForSlider: number[] = [];
 
@@ -255,8 +268,13 @@ class MainPage extends BaseComponent {
         return valuesForSlider.indexOf(Number(value));
       },
     };
-    const range = document.getElementById(`slider-${type}`);
-    if (range) {
+    const range = document.getElementById(
+      `slider-${type}`,
+    ) as noUiSlider.target;
+
+    if (range.noUiSlider) {
+      range.noUiSlider.set([min, max]);
+    } else {
       noUiSlider.create(range, {
         start: [min, max],
         // A linear range from 0 to 15 (16 values)
@@ -266,8 +284,15 @@ class MainPage extends BaseComponent {
         connect: true,
         tooltips: true,
         format: format,
-        //pips: { mode: , format: format },
       });
+    }
+
+    if (range) {
+      if (range.noUiSlider) {
+        range.noUiSlider.on('end', (e) => {
+          this.filterProduct(e[0], e[1]);
+        });
+      }
     }
   }
 
