@@ -173,9 +173,11 @@ class MainPage extends BaseComponent {
   }
 
   async filterProduct(
-    startPrice?: number | string,
-    endPrice?: number | string,
+    start?: number | string,
+    end?: number | string,
+    type?: string,
   ) {
+    console.log(start, end, type);
     const filters = document.querySelector('.filter')!;
 
     const categories = [
@@ -186,23 +188,45 @@ class MainPage extends BaseComponent {
       ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
     ].map((n) => n.value);
 
-    const range = document.getElementById('slider-price') as noUiSlider.target;
-    const rangePrice = range.noUiSlider?.get() as number[];
+    const sliderPr = document.getElementById(
+      'slider-price',
+    ) as noUiSlider.target;
+    const sliderSt = document.getElementById(
+      'slider-stock',
+    ) as noUiSlider.target;
+    const rangePrice = sliderPr.noUiSlider?.get() as number[];
+    const rangeStock = sliderSt.noUiSlider?.get() as number[];
+    let startPr: number | string | undefined;
+    let endPr: number | string | undefined;
+    let startSt: number | string | undefined;
+    let endSt: number | string | undefined;
 
-    let startPr = startPrice || rangePrice[0];
-    let endPr = endPrice || rangePrice[1];
+    if (type === 'price') {
+      startPr = start;
+      endPr = end;
+      startSt = rangeStock[0];
+      endSt = rangeStock[1];
+    } else if (type === 'stock') {
+      startPr = rangePrice[0];
+      endPr = rangePrice[1];
+      startSt = start;
+      endSt = end;
+    }
 
     const filteredProducts = DATA.products.filter(
       (n) =>
         (!categories.length || categories.includes(n.category)) &&
         (!brands.length || brands.includes(n.brand)) &&
         (!startPr || startPr <= n.price) &&
-        (!endPr || endPr >= n.price),
+        (!endPr || endPr >= n.price) &&
+        (!startSt || startSt <= n.stock) &&
+        (!endSt || endSt >= n.stock),
     );
 
     this.setCountProducts(filteredProducts, 'category');
     this.setCountProducts(filteredProducts, 'brand');
     this.renderRange(filteredProducts, 'price');
+    this.renderRange(filteredProducts, 'stock');
 
     const container: HTMLElement | null =
       document.querySelector('.products-list');
@@ -290,7 +314,7 @@ class MainPage extends BaseComponent {
     if (range) {
       if (range.noUiSlider) {
         range.noUiSlider.on('end', (e) => {
-          this.filterProduct(e[0], e[1]);
+          this.filterProduct(e[0], e[1], type);
         });
       }
     }
