@@ -106,7 +106,16 @@ class MainPage extends BaseComponent {
     const sort = new BaseComponent('div')
       .setClass('sort-block')
       .render(maintop);
-    const select = new BaseComponent('select').setClass('sort').render(sort);
+    const select = new BaseComponent('select')
+      .setClass('sort')
+      .setHandler('change', (e: Event): Promise<void> => this.filterProduct())
+      .render(sort);
+    new BaseComponent('option')
+      .setAttribute('value', '')
+      .setAttribute('selected', 'selected')
+
+      .setContent('Choose here')
+      .render(select);
     new BaseComponent('option')
       .setAttribute('value', 'price-asc')
       .setContent('Sort by price ASC')
@@ -130,11 +139,11 @@ class MainPage extends BaseComponent {
       .render(maintop);
 
     const search = new BaseComponent('div')
-    .setClass('search-block')
-    .render(maintop);
+      .setClass('search-block')
+      .render(maintop);
     new BaseComponent('input')
-    .setAttribute('type', 'text')
-    .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
+      .setAttribute('type', 'text')
+      .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
       .setClass('search')
       .setAttribute('placeholder', 'Search')
       .render(search);
@@ -161,22 +170,34 @@ class MainPage extends BaseComponent {
     this.renderContent(productlist);
   }
 
-  searchProduct(){
-    let text=(<HTMLInputElement>document.querySelector('.search')).value;
-    if(!window.location.href.includes('?search')){
-      history.replaceState(null,'', `?search=${(<HTMLInputElement>document.querySelector('.search')).value}`);
+  searchProduct() {
+    let text = (<HTMLInputElement>document.querySelector('.search')).value;
+    if (!window.location.href.includes('?search')) {
+      history.replaceState(
+        null,
+        '',
+        `?search=${
+          (<HTMLInputElement>document.querySelector('.search')).value
+        }`,
+      );
       // `${window.location.href}?search=${(<HTMLInputElement>document.querySelector('.search')).value}`;
-    // text=(<HTMLInputElement>document.querySelector('.search')).value;
-    }
-    else{
-      history.replaceState(null,'', `?search=${(<HTMLInputElement>document.querySelector('.search')).value}`);
+      // text=(<HTMLInputElement>document.querySelector('.search')).value;
+    } else {
+      history.replaceState(
+        null,
+        '',
+        `?search=${
+          (<HTMLInputElement>document.querySelector('.search')).value
+        }`,
+      );
     }
     // else{
     //   const searchtext=window.location.search.split('?search=')[1];
     //   (<HTMLInputElement>document.querySelector('.search')).value=searchtext;
-         
+
     // }
-    if(text=='' && window.location.href.includes('?search'))history.replaceState(null,'', '/');
+    if (text == '' && window.location.href.includes('?search'))
+      history.replaceState(null, '', '/');
 
     // if(window.location.href.includes('?search')){
     //   const searchtext=window.location.search.split('?search=')[1];
@@ -187,7 +208,6 @@ class MainPage extends BaseComponent {
     // else{
     //   this.renderProducts(container, filteredProducts);
     // }
-    
   }
 
   async getData() {
@@ -198,13 +218,38 @@ class MainPage extends BaseComponent {
 
   async renderContent(container: HTMLElement) {
     DATA = await this.getData();
-    
+
     // this.filterProduct();
     this.renderProducts(container, DATA.products);
     this.renderFilter('category');
     this.renderFilter('brand');
     this.renderRange(DATA.products, 'price');
     this.renderRange(DATA.products, 'stock');
+  }
+
+  sortProduct(data: TProduct[], typeSort: string): TProduct[] {
+    let result: TProduct[] = [];
+    switch (typeSort) {
+      case 'price-asc':
+        result = data.sort((a: TProduct, b: TProduct) => a.price - b.price);
+        break;
+
+      case 'price-desc':
+        result = data.sort((a: TProduct, b: TProduct) => b.price - a.price);
+        break;
+
+      case 'reting-asc':
+        result = data.sort((a: TProduct, b: TProduct) => a.rating - b.rating);
+        break;
+
+      case 'reting-desc':
+        result = data.sort((a: TProduct, b: TProduct) => b.price - a.price);
+        break;
+      default:
+        result = data;
+        break;
+    }
+    return result;
   }
 
   async filterProduct(
@@ -229,6 +274,7 @@ class MainPage extends BaseComponent {
     const sliderSt = document.getElementById(
       'slider-stock',
     ) as noUiSlider.target;
+
     const rangePrice = sliderPr.noUiSlider?.get() as number[];
     const rangeStock = sliderSt.noUiSlider?.get() as number[];
     let startPr: number | string | undefined;
@@ -248,15 +294,25 @@ class MainPage extends BaseComponent {
       endSt = end;
     }
 
-    const filteredProducts = DATA.products.filter(
+    let filteredProducts = DATA.products.filter(
       (n) =>
         (!categories.length || categories.includes(n.category)) &&
         (!brands.length || brands.includes(n.brand)) &&
         (!startPr || startPr <= n.price) &&
         (!endPr || endPr >= n.price) &&
         (!startSt || startSt <= n.stock) &&
-        (!endSt || endSt >= n.stock)&& 
-        (Object.values(n).filter(word => String(word).toLowerCase().includes((<HTMLInputElement>document.querySelector('.search')).value.toLowerCase()) === true).length>0 || (<HTMLInputElement>document.querySelector('.search')).value==''),
+        (!endSt || endSt >= n.stock) &&
+        (Object.values(n).filter(
+          (word) =>
+            String(word)
+              .toLowerCase()
+              .includes(
+                (<HTMLInputElement>(
+                  document.querySelector('.search')
+                )).value.toLowerCase(),
+              ) === true,
+        ).length > 0 ||
+          (<HTMLInputElement>document.querySelector('.search')).value == ''),
     );
 
     this.setCountProducts(filteredProducts, 'category');
@@ -264,6 +320,9 @@ class MainPage extends BaseComponent {
     this.renderRange(filteredProducts, 'price');
     this.renderRange(filteredProducts, 'stock');
     this.searchProduct();
+
+    const typeSort = document.querySelector('.sort') as HTMLSelectElement;
+    filteredProducts = this.sortProduct(filteredProducts, typeSort.value);
 
     const container: HTMLElement | null =
       document.querySelector('.products-list');
@@ -358,13 +417,15 @@ class MainPage extends BaseComponent {
   }
 
   renderProducts(container: HTMLElement, data: TProduct[]) {
-    let allsearch=0;
-    (<HTMLElement>document.querySelector('.found')).innerHTML=String(allsearch);
+    let allsearch = 0;
+    (<HTMLElement>document.querySelector('.found')).innerHTML =
+      String(allsearch);
     data.forEach((product: TProduct) => {
       if (container) {
-          allsearch++;
-        (<HTMLElement>document.querySelector('.found')).innerHTML=String(allsearch);
-          container.innerHTML += `<div class="product">
+        allsearch++;
+        (<HTMLElement>document.querySelector('.found')).innerHTML =
+          String(allsearch);
+        container.innerHTML += `<div class="product">
         <div class="product-img">
           <img
             src="${product.thumbnail}"
