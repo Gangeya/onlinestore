@@ -4,6 +4,7 @@ import { IProducts } from '../../core/types';
 import { TProduct } from '../../core/types';
 declare class MainPage extends BaseComponent {
     constructor(title: string, content: string);
+    searchProduct(): void;
     getData(): Promise<IProducts>;
     renderContent(container: HTMLElement): Promise<void>;
     filterProduct(start?: number | string, end?: number | string, type?: string): Promise<void>;
