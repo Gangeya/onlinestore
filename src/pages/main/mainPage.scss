@@ -3,6 +3,7 @@
 }
 aside {
   width: 20%;
+  min-width: 350px;
 }
 .container {
   max-width: 1920px;
@@ -53,6 +54,11 @@ aside {
 li > a {
   color: white;
   text-decoration: none;
+}
+.filter-title {
+  font-weight: bold;
+  margin-bottom: 25px;
+  text-align: center;
 }
 .filter-list {
   label::first-letter {
@@ -139,9 +145,6 @@ input[type='range']::-webkit-slider-thumb {
 }
 
 /*Checkbox*/
-input[type='checkbox']:checked {
-  accent-color: #da002b;
-}
 
 .main-top {
   padding: 10px;
@@ -231,4 +234,19 @@ input[type='checkbox']:checked {
 }
 .footer-text {
   text-align: center;
+}
+
+#slider-price,
+#slider-stock {
+  height: 10px;
+  .noUi-connect {
+    background: #da002b;
+  }
+  .noUi-handle {
+    height: 18px;
+    width: 18px;
+    top: -5px;
+    right: -9px; /* half the width */
+    border-radius: 9px;
+  }
 }

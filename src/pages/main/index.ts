@@ -1,4 +1,7 @@
 import BaseComponent from '../../core/templates/component';
+//import noUiSlider from 'nouislider';
+import * as noUiSlider from 'nouislider';
+import 'nouislider/dist/nouislider.css';
 const view1 = <string>require('../../assets/images/view1.png');
 const view2 = <string>require('../../assets/images/view2.png');
 
@@ -24,6 +27,7 @@ class MainPage extends BaseComponent {
     const filterinner = new BaseComponent('div')
       .setClass('filter-inner')
       .render(filter);
+
     const filterbuttons = new BaseComponent('div')
       .setClass('filter-buttons')
       .render(filterinner);
@@ -73,17 +77,9 @@ class MainPage extends BaseComponent {
       .setClass('filter-title')
       .setContent('Price')
       .render(filterblock3);
-    const data = new BaseComponent('div').render(filterblock3);
-    new BaseComponent('span').setContent('500$').render(data);
-    const range = new BaseComponent('div')
-      .setClass('range')
-      .render(filterblock3);
-    new BaseComponent('input')
-      .setAttribute('type', 'range')
-      .setClass('range-price')
-      .setAttribute('min', '1')
-      .setAttribute('max', '100')
-      .render(range);
+
+    const sliderPrice = new BaseComponent('div').render(filterblock3);
+    sliderPrice.id = 'slider-price';
 
     //block stock range
     const filterblock4 = new BaseComponent('div')
@@ -93,17 +89,9 @@ class MainPage extends BaseComponent {
       .setClass('filter-title')
       .setContent('Stock')
       .render(filterblock4);
-    const data2 = new BaseComponent('div').render(filterblock4);
-    new BaseComponent('span').setContent('10').render(data2);
-    const range2 = new BaseComponent('div')
-      .setClass('range')
-      .render(filterblock4);
-    new BaseComponent('input')
-      .setAttribute('type', 'range')
-      .setClass('range-stock')
-      .setAttribute('min', '1')
-      .setAttribute('max', '500')
-      .render(range2);
+
+    const sliderStock = new BaseComponent('div').render(filterblock4);
+    sliderStock.id = 'slider-stock';
 
     //CONTENT
     const contents = new BaseComponent('div').setClass('content').render(main);
@@ -174,7 +162,22 @@ class MainPage extends BaseComponent {
     return DATA;
   }
 
-  async filterProduct() {
+  async renderContent(container: HTMLElement) {
+    DATA = await this.getData();
+
+    this.renderProducts(container, DATA.products);
+    this.renderFilter('category');
+    this.renderFilter('brand');
+    this.renderRange(DATA.products, 'price');
+    this.renderRange(DATA.products, 'stock');
+  }
+
+  async filterProduct(
+    start?: number | string,
+    end?: number | string,
+    type?: string,
+  ) {
+    console.log(start, end, type);
     const filters = document.querySelector('.filter')!;
 
     const categories = [
@@ -185,14 +188,45 @@ class MainPage extends BaseComponent {
       ...filters.querySelectorAll<HTMLInputElement>('#brand input:checked'),
     ].map((n) => n.value);
 
+    const sliderPr = document.getElementById(
+      'slider-price',
+    ) as noUiSlider.target;
+    const sliderSt = document.getElementById(
+      'slider-stock',
+    ) as noUiSlider.target;
+    const rangePrice = sliderPr.noUiSlider?.get() as number[];
+    const rangeStock = sliderSt.noUiSlider?.get() as number[];
+    let startPr: number | string | undefined;
+    let endPr: number | string | undefined;
+    let startSt: number | string | undefined;
+    let endSt: number | string | undefined;
+
+    if (type === 'price') {
+      startPr = start;
+      endPr = end;
+      startSt = rangeStock[0];
+      endSt = rangeStock[1];
+    } else if (type === 'stock') {
+      startPr = rangePrice[0];
+      endPr = rangePrice[1];
+      startSt = start;
+      endSt = end;
+    }
+
     const filteredProducts = DATA.products.filter(
       (n) =>
         (!categories.length || categories.includes(n.category)) &&
-        (!brands.length || brands.includes(n.brand)),
+        (!brands.length || brands.includes(n.brand)) &&
+        (!startPr || startPr <= n.price) &&
+        (!endPr || endPr >= n.price) &&
+        (!startSt || startSt <= n.stock) &&
+        (!endSt || endSt >= n.stock),
     );
 
     this.setCountProducts(filteredProducts, 'category');
     this.setCountProducts(filteredProducts, 'brand');
+    this.renderRange(filteredProducts, 'price');
+    this.renderRange(filteredProducts, 'stock');
 
     const container: HTMLElement | null =
       document.querySelector('.products-list');
@@ -233,12 +267,57 @@ class MainPage extends BaseComponent {
     });
   }
 
-  async renderContent(container: HTMLElement) {
-    DATA = await this.getData();
+  renderRange(data: TProduct[], type: string): void {
+    let valuesForSlider: number[] = [];
 
-    this.renderProducts(container, DATA.products);
-    this.renderFilter('category');
-    this.renderFilter('brand');
+    if (type === 'price') {
+      data.forEach((product) => {
+        valuesForSlider.push(product.price);
+      });
+    } else if (type === 'stock') {
+      data.forEach((product) => {
+        valuesForSlider.push(product.stock);
+      });
+    }
+
+    valuesForSlider = [...new Set(valuesForSlider)].sort((a, b) => a - b);
+    let min = Math.min(...valuesForSlider);
+    let max = Math.max(...valuesForSlider);
+
+    let format = {
+      to: function (value: number) {
+        return valuesForSlider[Math.round(value)];
+      },
+      from: function (value: string) {
+        return valuesForSlider.indexOf(Number(value));
+      },
+    };
+    const range = document.getElementById(
+      `slider-${type}`,
+    ) as noUiSlider.target;
+
+    if (range.noUiSlider) {
+      range.noUiSlider.set([min, max]);
+    } else {
+      noUiSlider.create(range, {
+        start: [min, max],
+        // A linear range from 0 to 15 (16 values)
+        range: { min: 0, max: valuesForSlider.length - 1 },
+        // steps of 1
+        step: 1,
+        connect: true,
+        tooltips: true,
+        format: format,
+      });
+    }
+
+    if (range) {
+      if (range.noUiSlider) {
+        range.noUiSlider.on('end', (e) => {
+          this.filterProduct(e[0], e[1], type);
+        });
+      }
+    }
   }
 
   renderProducts(container: HTMLElement, data: TProduct[]) {
