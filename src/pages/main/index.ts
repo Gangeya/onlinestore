@@ -140,11 +140,15 @@ class MainPage extends BaseComponent {
       .render(search);
 
     const view = new BaseComponent('div').setClass('view').render(maintop);
-    new BaseComponent('img')
+    const v1:HTMLElement=new BaseComponent('img')
+      .setClass('view1')
+      .setHandler('click',(e)=>{this.view(v1)})
       .setAttribute('src', view1)
       .setAttribute('height', '27')
       .render(view);
-    new BaseComponent('img')
+    const v2:HTMLElement=new BaseComponent('img')
+      .setClass('view2')
+      .setHandler('click',(e)=>{this.view(v2)})
       .setAttribute('src', view2)
       .setAttribute('width', '27')
       .render(view);
@@ -436,6 +440,22 @@ class MainPage extends BaseComponent {
 
     this.filterProduct();
   }
+  view(v:HTMLElement){
+    if(v.className=='view2'){
+      document.querySelectorAll('.product').forEach(function(e,i){
+        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width='330px';
+        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.width='330px';
+        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.height='220px';
+      });
+    }
+    else{
+      document.querySelectorAll('.product').forEach(function(e,i){
+        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width='220px';
+        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.width='220px';
+        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.height='147px';
+      }); 
+    }
+}
 }
 
 export default MainPage;
