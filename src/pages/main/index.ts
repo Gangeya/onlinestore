@@ -130,10 +130,11 @@ class MainPage extends BaseComponent {
       .render(maintop);
 
     const search = new BaseComponent('div')
-      .setClass('search-block')
-      .render(maintop);
+    .setClass('search-block')
+    .render(maintop);
     new BaseComponent('input')
-      .setAttribute('type', 'text')
+    .setAttribute('type', 'text')
+    .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
       .setClass('search')
       .setAttribute('placeholder', 'Search')
       .render(search);
@@ -156,6 +157,35 @@ class MainPage extends BaseComponent {
     this.renderContent(productlist);
   }
 
+  searchProduct(){
+    let text=(<HTMLInputElement>document.querySelector('.search')).value;
+    if(!window.location.href.includes('?search')){
+      history.replaceState(null,'', `?search=${(<HTMLInputElement>document.querySelector('.search')).value}`);
+      // `${window.location.href}?search=${(<HTMLInputElement>document.querySelector('.search')).value}`;
+    // text=(<HTMLInputElement>document.querySelector('.search')).value;
+    }
+    else{
+      history.replaceState(null,'', `?search=${(<HTMLInputElement>document.querySelector('.search')).value}`);
+    }
+    // else{
+    //   const searchtext=window.location.search.split('?search=')[1];
+    //   (<HTMLInputElement>document.querySelector('.search')).value=searchtext;
+         
+    // }
+    if(text=='' && window.location.href.includes('?search'))history.replaceState(null,'', '/');
+
+    // if(window.location.href.includes('?search')){
+    //   const searchtext=window.location.search.split('?search=')[1];
+    //   alert(searchtext);
+    //   (<HTMLInputElement>document.querySelector('.search')).value=searchtext;
+    //   this.renderProducts(container, filteredProducts);
+    // }
+    // else{
+    //   this.renderProducts(container, filteredProducts);
+    // }
+    
+  }
+
   async getData() {
     const response = await fetch('https://dummyjson.com/products?limit=100');
     DATA = await response.json();
@@ -164,7 +194,8 @@ class MainPage extends BaseComponent {
 
   async renderContent(container: HTMLElement) {
     DATA = await this.getData();
-
+    
+    // this.filterProduct();
     this.renderProducts(container, DATA.products);
     this.renderFilter('category');
     this.renderFilter('brand');
@@ -177,7 +208,7 @@ class MainPage extends BaseComponent {
     end?: number | string,
     type?: string,
   ) {
-    console.log(start, end, type);
+    // console.log(start, end, type);
     const filters = document.querySelector('.filter')!;
 
     const categories = [
@@ -220,13 +251,15 @@ class MainPage extends BaseComponent {
         (!startPr || startPr <= n.price) &&
         (!endPr || endPr >= n.price) &&
         (!startSt || startSt <= n.stock) &&
-        (!endSt || endSt >= n.stock),
+        (!endSt || endSt >= n.stock)&& 
+        (Object.values(n).filter(word => String(word).toLowerCase().includes((<HTMLInputElement>document.querySelector('.search')).value.toLowerCase()) === true).length>0 || (<HTMLInputElement>document.querySelector('.search')).value==''),
     );
 
     this.setCountProducts(filteredProducts, 'category');
     this.setCountProducts(filteredProducts, 'brand');
     this.renderRange(filteredProducts, 'price');
     this.renderRange(filteredProducts, 'stock');
+    this.searchProduct();
 
     const container: HTMLElement | null =
       document.querySelector('.products-list');
@@ -321,9 +354,13 @@ class MainPage extends BaseComponent {
   }
 
   renderProducts(container: HTMLElement, data: TProduct[]) {
+    let allsearch=0;
+    (<HTMLElement>document.querySelector('.found')).innerHTML=String(allsearch);
     data.forEach((product: TProduct) => {
       if (container) {
-        container.innerHTML += `<div class="product">
+          allsearch++;
+        (<HTMLElement>document.querySelector('.found')).innerHTML=String(allsearch);
+          container.innerHTML += `<div class="product">
         <div class="product-img">
           <img
             src="${product.thumbnail}"

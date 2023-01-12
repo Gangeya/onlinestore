@@ -30,10 +30,12 @@ export default class App {
   }
 
   handleRouteChange(): void {
+    console.log(window.location.href);
     const hash = window.location.hash.slice(1).toLowerCase();
     const targetPage = hash ? routes[hash] || notFoundPage : routes.main;
-
-    if (targetPage === this.activePage) return;
+    if (targetPage === this.activePage) {
+      return;
+    }
     if (this.activePage) this.activePage.remove();
     this.activePage = targetPage;
     this.activePage.renderAfter(this.header);
