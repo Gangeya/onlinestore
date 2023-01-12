@@ -143,6 +143,8 @@ class MainPage extends BaseComponent {
       .render(maintop);
     new BaseComponent('input')
       .setAttribute('type', 'text')
+      .setHandler('focus', e => this.focus())
+      .setHandler('blur', e => this.blur())
       .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
       .setClass('search')
       .setAttribute('placeholder', 'Search')
@@ -170,9 +172,17 @@ class MainPage extends BaseComponent {
     this.renderContent(productlist);
   }
 
+  focus(){
+    (<HTMLElement>document.querySelector('.search')).classList.add('onfocus');
+  }
+  blur(){
+    (<HTMLElement>document.querySelector('.search')).classList.remove('onfocus');
+  }
+
   searchProduct() {
+    if((<HTMLElement>document.querySelector('.search')).classList.contains("onfocus")){
     let text = (<HTMLInputElement>document.querySelector('.search')).value;
-    if (!window.location.href.includes('?search')) {
+    if (!window.location.href.includes('?search') && text!='') {
       history.replaceState(
         null,
         '',
@@ -182,7 +192,7 @@ class MainPage extends BaseComponent {
       );
       // `${window.location.href}?search=${(<HTMLInputElement>document.querySelector('.search')).value}`;
       // text=(<HTMLInputElement>document.querySelector('.search')).value;
-    } else {
+    } else if(window.location.href.includes('?search') && text!=''){
       history.replaceState(
         null,
         '',
@@ -197,17 +207,8 @@ class MainPage extends BaseComponent {
 
     // }
     if (text == '' && window.location.href.includes('?search'))
-      history.replaceState(null, '', '/');
-
-    // if(window.location.href.includes('?search')){
-    //   const searchtext=window.location.search.split('?search=')[1];
-    //   alert(searchtext);
-    //   (<HTMLInputElement>document.querySelector('.search')).value=searchtext;
-    //   this.renderProducts(container, filteredProducts);
-    // }
-    // else{
-    //   this.renderProducts(container, filteredProducts);
-    // }
+      history.pushState(null, '', '/');
+  }
   }
 
   async getData() {
