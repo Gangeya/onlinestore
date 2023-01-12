@@ -7,6 +7,7 @@ declare class BaseComponent {
     setClass(classes: string | string[]): this;
     setAttribute(attr: string, value?: string): this;
     setContent(content: string): this;
+    setHTML(htmlcode: string): this;
     setHandler(event: keyof HTMLElementEventMap, callback: (e: Event) => void): this;
 }
 export default BaseComponent;

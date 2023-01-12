@@ -10,5 +10,6 @@ export default class App {
     constructor();
     handleRouteChange(): void;
     start(): void;
+    popbg(): void;
 }
 export declare const app: App;
