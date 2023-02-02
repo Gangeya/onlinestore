@@ -4,6 +4,8 @@ import { IProducts } from '../../core/types';
 import { TProduct } from '../../core/types';
 declare class MainPage extends BaseComponent {
     constructor(title: string, content: string);
+    focus(): void;
+    blur(): void;
     searchProduct(): void;
     getData(): Promise<IProducts>;
     renderContent(container: HTMLElement): Promise<void>;
