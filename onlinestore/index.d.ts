@@ -2,13 +2,13 @@ import './styles.scss';
 import './pages/main/mainPage.scss';
 import './core/components/footer/footer.scss';
 import Header from './core/components/header';
-import Page from './core/templates/page';
 export default class App {
+    private cart;
     private container;
-    activePage?: Page;
+    activePage?: string;
     header: Header;
     constructor();
-    handleRouteChange(): void;
+    handleRouteChange(): HTMLElement | undefined;
     start(): void;
     popbg(): void;
 }
