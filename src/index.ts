@@ -9,19 +9,21 @@ import ProductPage from './pages/product';
 import CartPage from './pages/cart';
 import Page from './core/templates/page';
 import Link from './core/templates/link';
-
-const routes: Record<string, Page> = {
-  main: new MainPage('Main page', 'Main content'),
-  product: new ProductPage('Product', 'Product page content'),
-  cart: new CartPage('Cart', 'Cart page content'),
-};
-
+import Cart from './core/cart/cart';
+enum Routes {
+  main = 'main',
+  product = 'product',
+  cart = 'cart',
+  '' = 'main',
+}
 const notFoundPage = new Page('404', 'Not found');
 
 export default class App {
+  private cart = new Cart();
+
   private container: HTMLElement = <HTMLElement>document.getElementById('app');
 
-  activePage?: Page;
+  activePage?: string;
 
   header: Header;
 
@@ -29,20 +31,26 @@ export default class App {
     this.header = new Header();
   }
 
-  handleRouteChange(): void {
-    console.log(window.location.href);
+  handleRouteChange() {
+    document.querySelector('main')?.remove();
     const hash = window.location.hash.slice(1).toLowerCase();
-    const targetPage = hash ? routes[hash] || notFoundPage : routes.main;
+    let targetPage = '';
+    if (hash.includes('product/')) {
+      targetPage = Routes.product;
+      return new ProductPage().renderAfter(this.header);
+    } else if (hash === 'main' || hash === '') {
+      targetPage = Routes[hash] || notFoundPage;
+      return new MainPage().renderAfter(this.header);
+    } else if (hash === 'cart') {
+      targetPage = Routes[hash] || notFoundPage;
+      return new CartPage().renderAfter(this.header);
+    } else targetPage = Routes.main;
     if (targetPage === this.activePage) {
       return;
     }
-    if (this.activePage) this.activePage.remove();
-    this.activePage = targetPage;
-    this.activePage.renderAfter(this.header);
   }
 
   start() {
-    //alert('Уважаемый, проверяющий! Дай нам еще 2 дня допилить проект!))');
     const nav = new BaseComponent('nav').setClass('d-none');
     const footer = new Footer('footer', 'footer');
     const popupbg = new BaseComponent('div')
@@ -51,7 +59,7 @@ export default class App {
         this.popbg();
       });
 
-    Object.keys(routes).forEach((route) => {
+    Object.keys(Routes).forEach((route) => {
       new Link(route).render(nav);
     });
 

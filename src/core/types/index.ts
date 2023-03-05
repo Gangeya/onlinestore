@@ -18,3 +18,11 @@ export interface IProducts {
   skip: number;
   limit: number;
 }
+
+export interface MyWindow extends Window {
+  data: IProducts;
+}
+
+export type ProductWitchStock = [number, TProduct][];
+
+export type CartItems = ProductWitchStock[];

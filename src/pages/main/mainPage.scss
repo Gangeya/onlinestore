@@ -45,11 +45,12 @@ aside {
   height: 40px;
   display: flex;
   list-style: none;
-  justify-content: space-evenly;
-  width: 35%;
   align-items: center;
   color: white;
   font-weight: 500;
+  li {
+    padding-left: 12rem;
+  }
 }
 li > a {
   color: white;
@@ -231,6 +232,10 @@ input[type='range']::-webkit-slider-thumb {
     cursor: pointer;
     color: white;
   }
+}
+.active {
+  background: rgb(243, 71, 71);
+  color: white;
 }
 .footer-text {
   text-align: center;

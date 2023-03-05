@@ -1,12 +1,11 @@
-import App from '../../..';
 import BaseComponent from '../../templates/component';
 const cartimg = require('../../../assets/images/shopping-cart.png');
 const logoimg = require('../../../assets/images/logo.png');
-
+import Cart from '../../cart/cart';
 class Header extends BaseComponent {
+  private cart = new Cart();
   constructor() {
     super('header');
-    // this.setClass('header');
     const div_header = new BaseComponent('div')
       .setClass('header')
       .setClass('container')
@@ -22,13 +21,14 @@ class Header extends BaseComponent {
     const totalincart = new BaseComponent('div')
       .setClass('total-in-cart')
       .render(cartblock);
-    new BaseComponent('span').setContent('Итого в корзине: ').render(totalincart);
+    new BaseComponent('span')
+      .setContent('Итого в корзине: ')
+      .render(totalincart);
     new BaseComponent('span')
       .setClass('total-price')
-      .setContent('1 258 $')
+      .setContent(`${this.cart.getTotalPrice() || 0} $`)
       .render(totalincart);
     const cart = new BaseComponent('div').setClass('cart').render(cartblock);
-    // new BaseComponent('div').setClass('total-price').setContent('100 $').render(this);
     const cartlink = new BaseComponent('a')
       .setClass('cart-link')
       .setAttribute('href', '#cart')
@@ -40,7 +40,7 @@ class Header extends BaseComponent {
       .render(cartlink);
     new BaseComponent('span')
       .setClass('cart-count')
-      .setContent('2')
+      .setContent(`${this.cart.getCountItemsInCart() || 0}`)
       .render(cartlink);
     const bread = new BaseComponent('div').setClass('breadcrumbs').render(this);
     const breadul = new BaseComponent('ul')
@@ -51,11 +51,6 @@ class Header extends BaseComponent {
       .setAttribute('href', '#main')
       .setContent('Main')
       .render(limain);
-    const product = new BaseComponent('li').render(breadul);
-    new BaseComponent('a')
-      .setAttribute('href', '#product')
-      .setContent('Product')
-      .render(product);
   }
 }
 

@@ -1,24 +1,33 @@
 import BaseComponent from '../../core/templates/component';
-//import noUiSlider from 'nouislider';
 import * as noUiSlider from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 const view1 = <string>require('../../assets/images/view1.png');
 const view2 = <string>require('../../assets/images/view2.png');
-
-import { IProducts } from '../../core/types';
+import Api from '../../core/api/api';
+import Cart from '../../core/cart/cart';
+import { IProducts, MyWindow } from '../../core/types';
 import { TProduct } from '../../core/types';
 
 let DATA: IProducts;
 
 class MainPage extends BaseComponent {
-  constructor(title: string, content: string) {
+  private static instance: MainPage;
+  private api = new Api();
+  private cart = new Cart();
+  constructor() {
     super('main');
-
+    this.setBreadcrumbs();
+    setTimeout(() => {
+      this.checkActive();
+    }, 0);
+    if (MainPage.instance) {
+      return MainPage.instance;
+    }
+    MainPage.instance = this;
     const main = new BaseComponent('div')
       .setClass('main')
       .setClass('container')
       .render(this);
-    //ASIDE
     const aside = new BaseComponent('aside').render(main);
     const filter = new BaseComponent('div')
       .setClass('filter')
@@ -39,6 +48,7 @@ class MainPage extends BaseComponent {
     new BaseComponent('button')
       .setClass('copy')
       .setContent('Copy')
+      .setHandler('click', () => this.copylink())
       .render(filterbuttons);
 
     const filterblock = new BaseComponent('div')
@@ -49,7 +59,6 @@ class MainPage extends BaseComponent {
       .setContent('Category')
       .render(filterblock);
 
-    //filter list
     const filterlist = new BaseComponent('div')
       .setClass('filter-list')
       .render(filterblock);
@@ -63,13 +72,11 @@ class MainPage extends BaseComponent {
       .setContent('Brand')
       .render(filterblock2);
 
-    //filter list2
     const filterlist2 = new BaseComponent('div')
       .setClass('filter-list')
       .render(filterblock2);
     filterlist2.id = 'brand';
 
-    //block price range
     const filterblock3 = new BaseComponent('div')
       .setClass('filter-block')
       .render(filterinner);
@@ -81,7 +88,6 @@ class MainPage extends BaseComponent {
     const sliderPrice = new BaseComponent('div').render(filterblock3);
     sliderPrice.id = 'slider-price';
 
-    //block stock range
     const filterblock4 = new BaseComponent('div')
       .setClass('filter-block')
       .render(filterinner);
@@ -93,12 +99,10 @@ class MainPage extends BaseComponent {
     const sliderStock = new BaseComponent('div').render(filterblock4);
     sliderStock.id = 'slider-stock';
 
-    //CONTENT
     const contents = new BaseComponent('div').setClass('content').render(main);
     const maininner = new BaseComponent('div')
       .setClass('main-inner')
       .render(contents);
-    //MAIN TOP
     const maintop = new BaseComponent('div')
       .setClass('main-top')
       .render(maininner);
@@ -143,28 +147,31 @@ class MainPage extends BaseComponent {
       .render(maintop);
     new BaseComponent('input')
       .setAttribute('type', 'text')
-      .setHandler('focus', e => this.focus())
-      .setHandler('blur', e => this.blur())
+      .setHandler('focus', (e) => this.focus())
+      .setHandler('blur', (e) => this.blur())
       .setHandler('input', (e: Event): Promise<void> => this.filterProduct())
       .setClass('search')
       .setAttribute('placeholder', 'Search')
       .render(search);
 
     const view = new BaseComponent('div').setClass('view').render(maintop);
-    const v1:HTMLElement=new BaseComponent('img')
+    const v1: HTMLElement = new BaseComponent('img')
       .setClass('view1')
-      .setHandler('click',(e)=>{this.view(v1)})
+      .setHandler('click', (e) => {
+        this.view(v1);
+      })
       .setAttribute('src', view1)
       .setAttribute('height', '27')
       .render(view);
-    const v2:HTMLElement=new BaseComponent('img')
+    const v2: HTMLElement = new BaseComponent('img')
       .setClass('view2')
-      .setHandler('click',(e)=>{this.view(v2)})
+      .setHandler('click', (e) => {
+        this.view(v2);
+      })
       .setAttribute('src', view2)
       .setAttribute('width', '27')
       .render(view);
 
-    //PRODUCT LIST
     const productlist = new BaseComponent('div')
       .setClass('products-list')
       .render(maininner);
@@ -172,55 +179,53 @@ class MainPage extends BaseComponent {
     this.renderContent(productlist);
   }
 
-  focus(){
+  focus() {
     (<HTMLElement>document.querySelector('.search')).classList.add('onfocus');
   }
-  blur(){
-    (<HTMLElement>document.querySelector('.search')).classList.remove('onfocus');
+
+  blur() {
+    (<HTMLElement>document.querySelector('.search')).classList.remove(
+      'onfocus'
+    );
   }
 
   searchProduct() {
-    if((<HTMLElement>document.querySelector('.search')).classList.contains("onfocus")){
-    let text = (<HTMLInputElement>document.querySelector('.search')).value;
-    if (!window.location.href.includes('?search') && text!='') {
-      history.replaceState(
-        null,
-        '',
-        `?search=${
-          (<HTMLInputElement>document.querySelector('.search')).value
-        }`,
-      );
-      // `${window.location.href}?search=${(<HTMLInputElement>document.querySelector('.search')).value}`;
-      // text=(<HTMLInputElement>document.querySelector('.search')).value;
-    } else if(window.location.href.includes('?search') && text!=''){
-      history.replaceState(
-        null,
-        '',
-        `?search=${
-          (<HTMLInputElement>document.querySelector('.search')).value
-        }`,
-      );
+    if (
+      (<HTMLElement>document.querySelector('.search')).classList.contains(
+        'onfocus'
+      )
+    ) {
+      const text = (<HTMLInputElement>document.querySelector('.search')).value;
+      if (!window.location.href.includes('?search') && text != '') {
+        history.replaceState(
+          null,
+          '',
+          `?search=${
+            (<HTMLInputElement>document.querySelector('.search')).value
+          }`
+        );
+      } else if (window.location.href.includes('?search') && text != '') {
+        history.replaceState(
+          null,
+          '',
+          `?search=${
+            (<HTMLInputElement>document.querySelector('.search')).value
+          }`
+        );
+      }
+      if (text == '' && window.location.href.includes('?search'))
+        history.pushState(null, '', '/onlinestore/onlinestore/');
     }
-    // else{
-    //   const searchtext=window.location.search.split('?search=')[1];
-    //   (<HTMLInputElement>document.querySelector('.search')).value=searchtext;
-
-    // }
-    if (text == '' && window.location.href.includes('?search'))
-      history.pushState(null, '', '/');
-  }
   }
 
   async getData() {
-    const response = await fetch('https://dummyjson.com/products?limit=100');
-    DATA = await response.json();
+    DATA = await this.api.getProducts();
     return DATA;
   }
 
   async renderContent(container: HTMLElement) {
     DATA = await this.getData();
 
-    // this.filterProduct();
     this.renderProducts(container, DATA.products);
     this.renderFilter('category');
     this.renderFilter('brand');
@@ -256,9 +261,8 @@ class MainPage extends BaseComponent {
   async filterProduct(
     start?: number | string,
     end?: number | string,
-    type?: string,
+    type?: string
   ) {
-    // console.log(start, end, type);
     const filters = document.querySelector('.filter')!;
 
     const categories = [
@@ -270,10 +274,10 @@ class MainPage extends BaseComponent {
     ].map((n) => n.value);
 
     const sliderPr = document.getElementById(
-      'slider-price',
+      'slider-price'
     ) as noUiSlider.target;
     const sliderSt = document.getElementById(
-      'slider-stock',
+      'slider-stock'
     ) as noUiSlider.target;
 
     const rangePrice = sliderPr.noUiSlider?.get() as number[];
@@ -310,10 +314,10 @@ class MainPage extends BaseComponent {
               .includes(
                 (<HTMLInputElement>(
                   document.querySelector('.search')
-                )).value.toLowerCase(),
-              ) === true,
+                )).value.toLowerCase()
+              ) === true
         ).length > 0 ||
-          (<HTMLInputElement>document.querySelector('.search')).value == ''),
+          (<HTMLInputElement>document.querySelector('.search')).value == '')
     );
 
     this.setCountProducts(filteredProducts, 'category');
@@ -378,10 +382,10 @@ class MainPage extends BaseComponent {
     }
 
     valuesForSlider = [...new Set(valuesForSlider)].sort((a, b) => a - b);
-    let min = Math.min(...valuesForSlider);
-    let max = Math.max(...valuesForSlider);
+    const min = Math.min(...valuesForSlider);
+    const max = Math.max(...valuesForSlider);
 
-    let format = {
+    const format = {
       to: function (value: number) {
         return valuesForSlider[Math.round(value)];
       },
@@ -390,7 +394,7 @@ class MainPage extends BaseComponent {
       },
     };
     const range = document.getElementById(
-      `slider-${type}`,
+      `slider-${type}`
     ) as noUiSlider.target;
 
     if (range.noUiSlider) {
@@ -398,9 +402,7 @@ class MainPage extends BaseComponent {
     } else {
       noUiSlider.create(range, {
         start: [min, max],
-        // A linear range from 0 to 15 (16 values)
         range: { min: 0, max: valuesForSlider.length - 1 },
-        // steps of 1
         step: 1,
         connect: true,
         tooltips: true,
@@ -421,12 +423,16 @@ class MainPage extends BaseComponent {
     let allsearch = 0;
     (<HTMLElement>document.querySelector('.found')).innerHTML =
       String(allsearch);
-    data.forEach((product: TProduct) => {
+    data.forEach((product: TProduct, i: number) => {
       if (container) {
         allsearch++;
         (<HTMLElement>document.querySelector('.found')).innerHTML =
           String(allsearch);
-        container.innerHTML += `<div class="product">
+        const divproduct = new BaseComponent('div')
+          .setClass('product')
+          .setAttribute('id', product.id)
+          .render(container);
+        divproduct.innerHTML += `
         <div class="product-img">
           <img
             src="${product.thumbnail}"
@@ -443,17 +449,47 @@ class MainPage extends BaseComponent {
           <div class="info discount"><span>Discount</span><span>${product.discountPercentage}</span></div>
           <div class="info rating"><span>Rating</span><span>${product.rating}</span></div>
           <div class="info stock"><span>Stock</span><span>${product.stock}</span></div>
-        </div>
-        <div class="product-bottom">
-          <input type="button" class="tocart" value="В корзину" /><input
-            type="button"
-            class="more"
-            value="Подробно"
-          />
-        </div>
-      </div>`;
+        </div>`;
+        const productbottom = new BaseComponent('div')
+          .setClass('product-bottom')
+          .render(divproduct);
+        const tocart = new BaseComponent('input')
+          .setClass('tocart')
+          .setAttribute('value', 'В корзину')
+          .setAttribute('type', 'button')
+          .setHandler('click', (e: Event) =>
+            this.tocart(e, product, product.price)
+          )
+          .render(productbottom);
+        if (this.cart.checkProduct(product)) {
+          tocart.classList.add('active');
+        }
+        const more = new BaseComponent('input')
+          .setClass('more')
+          .setAttribute('value', 'Подробно')
+          .setAttribute('type', 'button')
+          .setHandler('click', this.productlink(product))
+          .render(productbottom);
       }
     });
+  }
+
+  tocart(e: Event, product: TProduct, price: number) {
+    const allbuttons = document.querySelectorAll('.tocart');
+    const cartbutton = e.target as HTMLElement;
+    Array.from(allbuttons).indexOf(cartbutton);
+    if (cartbutton?.classList.contains('active')) {
+      cartbutton?.classList.remove('active');
+      this.cart.dropItem(product, price);
+    } else {
+      cartbutton?.classList.add('active');
+      this.cart.addItem(product, price);
+    }
+  }
+  productlink(prod: TProduct) {
+    return function () {
+      window.location.hash = `product/${prod.id}`;
+    };
   }
 
   renderFilter(name: string) {
@@ -473,7 +509,7 @@ class MainPage extends BaseComponent {
         acc[cur] = (acc[cur] || 0) + 1;
         return acc;
       },
-      {},
+      {}
     );
 
     const categoriesContainer = document.getElementById(name);
@@ -494,7 +530,7 @@ class MainPage extends BaseComponent {
 
   resetFilters() {
     const inputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
-      'input[type="checkbox"]',
+      'input[type="checkbox"]'
     );
     inputs.forEach((input) => {
       input.checked = false;
@@ -502,22 +538,56 @@ class MainPage extends BaseComponent {
 
     this.filterProduct();
   }
-  view(v:HTMLElement){
-    if(v.className=='view2'){
-      document.querySelectorAll('.product').forEach(function(e,i){
-        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width='330px';
-        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.width='330px';
-        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.height='220px';
+
+  view(v: HTMLElement) {
+    if (v.className == 'view2') {
+      document.querySelectorAll('.product').forEach(function (e, i) {
+        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width =
+          '330px';
+        (<HTMLElement>(
+          document.querySelectorAll('.product-img')[i].childNodes[1]
+        )).style.width = '330px';
+        (<HTMLElement>(
+          document.querySelectorAll('.product-img')[i].childNodes[1]
+        )).style.height = '220px';
+      });
+    } else {
+      document.querySelectorAll('.product').forEach(function (e, i) {
+        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width =
+          '220px';
+        (<HTMLElement>(
+          document.querySelectorAll('.product-img')[i].childNodes[1]
+        )).style.width = '220px';
+        (<HTMLElement>(
+          document.querySelectorAll('.product-img')[i].childNodes[1]
+        )).style.height = '147px';
       });
     }
-    else{
-      document.querySelectorAll('.product').forEach(function(e,i){
-        (<HTMLElement>document.querySelectorAll('.product')[i]).style.width='220px';
-        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.width='220px';
-        (<HTMLElement>document.querySelectorAll('.product-img')[i].childNodes[1]).style.height='147px';
-      }); 
-    }
-}
+  }
+  setBreadcrumbs() {
+    const ul = document.querySelector('.breadcrumbs-list') as HTMLElement;
+    ul.innerHTML = `<li><a href="#main">Main</a></li>`;
+  }
+  copylink() {
+    const input = document.querySelector('#text-copy') as HTMLInputElement;
+    input.value = location.href;
+    input.select();
+    document.execCommand('copy');
+  }
+  checkActive() {
+    const tocart = document.querySelectorAll('.tocart');
+    const activebuttons = this.cart
+      .getItemsInCart()
+      .map((product) => Number(JSON.parse(product).id) - 1);
+    tocart.forEach((button, index) => {
+      if (activebuttons.includes(index)) {
+        if (!button.classList.contains('active'))
+          button.classList.add('active');
+      } else {
+        button.classList.remove('active');
+      }
+    });
+  }
 }
 
 export default MainPage;

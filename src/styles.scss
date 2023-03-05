@@ -84,11 +84,12 @@ aside {
   height: 40px;
   display: flex;
   list-style: none;
-  justify-content: space-evenly;
-  width: 35%;
   align-items: center;
   color: white;
   font-weight: 500;
+  li {
+    padding-left: 12rem;
+  }
 }
 li > a {
   color: white;
